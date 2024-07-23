@@ -1,10 +1,18 @@
-import LocalStorageCrud from "./src/localstorage-crud";
+import Model from "./src/model";
+import Schema from "./src/schema";
 
-const personModel = new LocalStorageCrud("person");
+interface Person extends Schema {
+    name: string;
+    age: number;
+}
+const personModel = new Model<Person>("person");
+console.log(personModel.list());
 
-let data = personModel.list();
-console.log(data);
-personModel.create({ name: "test" });
-data = personModel.list();
+const person = personModel.build();
 
-console.log(data);
+person.name = "johnrey";
+person.age = 1;
+
+person.save();
+
+console.log(personModel.list());

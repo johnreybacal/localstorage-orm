@@ -1,17 +1,18 @@
 import { LocalStorage } from "node-localstorage";
+import Schema from "./schema";
 
 global.localStorage = new LocalStorage("./scratch");
 
-export default class LocalStorageCrud {
+export default class LocalStorageCrud<T extends Schema> {
     protected modelName: string;
 
     constructor(modelName: string) {
-        this.modelName = `localstorage-crud-model-${modelName}`;
+        this.modelName = modelName;
     }
 
-    public list(): any[] {
+    public list(): T[] {
         const idList = this.getIdList();
-        const models: any[] = new Array();
+        const models: T[] = new Array();
 
         idList.forEach((id: string) => {
             models.push(this.get(id));
@@ -20,24 +21,30 @@ export default class LocalStorageCrud {
         return models;
     }
 
-    public get(id: string): any {
+    public get(id: string): T {
         const json = JSON.parse(localStorage.getItem(id) ?? "{}");
 
         return Object.keys.length ? json : undefined;
     }
 
-    public create(model: any) {
-        model.id = crypto.randomUUID();
+    public create(data: T) {
+        data.id = crypto.randomUUID();
 
         const idList = this.getIdList();
-        idList.push(model.id);
+        idList.push(data.id);
         this.saveIdList(idList);
 
-        localStorage.setItem(model.id, JSON.stringify(model));
+        data.createdAt = new Date();
+        localStorage.setItem(data.id, JSON.stringify(data));
+
+        return data;
     }
 
-    public update(model: any) {
-        localStorage.setItem(model.id!, JSON.stringify(model));
+    public update(id: string, data: T) {
+        data.updatedAt = new Date();
+        localStorage.setItem(id, JSON.stringify(data));
+
+        return data;
     }
 
     public delete(id: string) {
