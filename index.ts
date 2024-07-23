@@ -1,14 +1,10 @@
-import LocalStorageCrud from "./lib";
+import LocalStorageCrud from "./src";
 
-console.log("hello world")
+const personModel = new LocalStorageCrud("person");
 
-// localStorage is not defined when running in terminal
-const personModel = new LocalStorageCrud('person');
+let data = personModel.list();
+console.log(data);
+personModel.create({ name: "test" });
+data = personModel.list();
 
-
-// personModel.add({name: 'test'})
-const data = personModel.list();
-console.log(data)
-
-
-console.log(data)
+console.log(data);
