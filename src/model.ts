@@ -74,6 +74,14 @@ export default class Model<T extends Schema> {
     }
 
     /**
+     * Delete a record based on ID
+     * @param id ID of the record
+     */
+    delete(id: string) {
+        this.localStorageCrud.delete(id);
+    }
+
+    /**
      * Deletes all records in the model
      */
     truncate() {
