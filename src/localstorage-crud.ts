@@ -5,9 +5,11 @@ global.localStorage = new LocalStorage("./data");
 
 export default class LocalStorageCrud<T extends Schema> {
     protected modelName: string;
+    private realModelName: string;
 
     constructor(modelName: string) {
-        this.modelName = modelName;
+        this.realModelName = modelName;
+        this.modelName = `localstorage-crud-model-${modelName}`;
     }
 
     public list(): T[] {
@@ -41,6 +43,10 @@ export default class LocalStorageCrud<T extends Schema> {
     }
 
     public update(id: string, data: T) {
+        const dataToUpdate = this.get(id);
+        if (!dataToUpdate) {
+            throw Error(`${this.realModelName} does not exist`);
+        }
         data.updatedAt = new Date();
         localStorage.setItem(id, JSON.stringify(data));
 
@@ -48,6 +54,11 @@ export default class LocalStorageCrud<T extends Schema> {
     }
 
     public delete(id: string) {
+        const dataToUpdate = this.get(id);
+        if (!dataToUpdate) {
+            throw Error(`${this.realModelName} does not exist`);
+        }
+
         const idList = this.getIdList();
         idList.splice(idList.indexOf(id), 1);
         this.saveIdList(idList);

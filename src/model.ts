@@ -6,7 +6,7 @@ export default class Model<T extends Schema> {
     private localStorageCrud: LocalStorageCrud<T>;
 
     constructor(modelName: string) {
-        this.modelName = `localstorage-crud-model-${modelName}`;
+        this.modelName = modelName;
         this.localStorageCrud = new LocalStorageCrud<T>(this.modelName);
     }
 
@@ -25,10 +25,7 @@ export default class Model<T extends Schema> {
         instance.delete = () => {
             if (instance.id) {
                 this.localStorageCrud.delete(instance.id);
-
-                return true;
             }
-            return false;
         };
 
         return instance;
@@ -42,8 +39,8 @@ export default class Model<T extends Schema> {
         return this.build(this.localStorageCrud.get(id));
     }
 
-    create(data: T) {
-        return this.build(this.localStorageCrud.create(data));
+    create(data: Omit<T, keyof Schema>) {
+        return this.build(this.localStorageCrud.create(data as T));
     }
 
     update(id: string, data: T) {

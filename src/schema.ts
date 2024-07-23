@@ -4,5 +4,5 @@ export default interface Schema {
     updatedAt: Date;
 
     save(): Schema;
-    delete(): boolean;
+    delete();
 }

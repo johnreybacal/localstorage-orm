@@ -15,4 +15,17 @@ person.age = 1;
 
 person.save();
 
+const person2 = personModel.create({
+    name: "john doe",
+    age: 2,
+});
+
 console.log(personModel.list());
+
+person2.name = "ghege";
+
+console.log(personModel.get(person2.id));
+
+person2.save();
+
+console.log(personModel.get(person2.id));
