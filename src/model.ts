@@ -49,4 +49,8 @@ export default class Model<T extends Schema> {
     update(id: string, data: T) {
         return this.build(this.localStorageCrud.update(id, data));
     }
+
+    truncate() {
+        this.localStorageCrud.truncate();
+    }
 }

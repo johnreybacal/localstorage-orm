@@ -1,7 +1,7 @@
 import { LocalStorage } from "node-localstorage";
 import Schema from "./schema";
 
-global.localStorage = new LocalStorage("./scratch");
+global.localStorage = new LocalStorage("./data");
 
 export default class LocalStorageCrud<T extends Schema> {
     protected modelName: string;
@@ -12,13 +12,13 @@ export default class LocalStorageCrud<T extends Schema> {
 
     public list(): T[] {
         const idList = this.getIdList();
-        const models: T[] = new Array();
+        const data: T[] = [];
 
         idList.forEach((id: string) => {
-            models.push(this.get(id));
+            data.push(this.get(id));
         });
 
-        return models;
+        return data;
     }
 
     public get(id: string): T {
@@ -53,6 +53,14 @@ export default class LocalStorageCrud<T extends Schema> {
         this.saveIdList(idList);
 
         localStorage.removeItem(id);
+    }
+
+    public truncate() {
+        const idList = this.getIdList();
+
+        idList.forEach((id: string) => {
+            this.delete(id);
+        });
     }
 
     private getIdList(): Array<string> {

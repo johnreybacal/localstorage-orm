@@ -6,7 +6,7 @@ interface Person extends Schema {
     age: number;
 }
 const personModel = new Model<Person>("person");
-console.log(personModel.list());
+personModel.truncate();
 
 const person = personModel.build();
 
