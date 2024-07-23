@@ -1,7 +1,9 @@
 import { LocalStorage } from "node-localstorage";
 import Schema from "./schema";
 
-global.localStorage = new LocalStorage("./data");
+if (typeof window === "undefined") {
+    global.localStorage = new LocalStorage("./data");
+}
 
 export default class LocalStorageCrud<T extends Schema> {
     protected modelName: string;
