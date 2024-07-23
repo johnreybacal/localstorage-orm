@@ -53,10 +53,9 @@ export default class LocalStorageDb<T extends Schema> {
 
         const idList = this.getIdList();
         idList.push(record.id);
-        this.saveIdList(idList);
 
-        record.createdAt = new Date();
         localStorage.setItem(record.id, JSON.stringify(record));
+        this.saveIdList(idList);
 
         return record;
     }
@@ -72,7 +71,7 @@ export default class LocalStorageDb<T extends Schema> {
         if (!recordToUpdate) {
             throw Error(`${this.realModelName} does not exist`);
         }
-        record.updatedAt = new Date();
+
         localStorage.setItem(id, JSON.stringify(record));
 
         return record;
@@ -90,9 +89,9 @@ export default class LocalStorageDb<T extends Schema> {
 
         const idList = this.getIdList();
         idList.splice(idList.indexOf(id), 1);
-        this.saveIdList(idList);
 
         localStorage.removeItem(id);
+        this.saveIdList(idList);
     }
 
     /**
