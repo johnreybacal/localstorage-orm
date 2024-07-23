@@ -1,11 +1,15 @@
 import { Model, Schema } from "./src";
+import ModelSettings from "./src/modelSettings";
 
 interface Person extends Schema {
     name: string;
     age: number;
     hobbies: string[];
 }
-const personModel = new Model<Person>("person");
+const modelSettings: ModelSettings = {
+    timestamps: true,
+};
+const personModel = new Model<Person>("person", modelSettings);
 personModel.truncate();
 
 const person = personModel.build();

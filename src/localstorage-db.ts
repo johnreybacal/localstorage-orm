@@ -95,6 +95,21 @@ export default class LocalStorageDb<T extends Schema> {
     }
 
     /**
+     * Soft deletes a record based on ID
+     * @param id ID of the record
+     */
+    public softDelete(id: string) {
+        const record = this.get(id);
+        if (!record) {
+            throw Error(`${this.realModelName} does not exist`);
+        }
+
+        record.isDeleted = true;
+
+        localStorage.setItem(id, JSON.stringify(record));
+    }
+
+    /**
      * Deletes all records in the model
      */
     public truncate() {

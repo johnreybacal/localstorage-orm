@@ -11,6 +11,10 @@ export default interface Schema {
      * Timestamp when the record was last updated
      */
     updatedAt: Date;
+    /**
+     * Flag if the record is deleted (in a soft delete model)
+     */
+    isDeleted: boolean;
 
     /**
      * Save this instance
