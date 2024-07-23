@@ -19,6 +19,10 @@ const person2 = personModel.create({
     name: "john doe",
     age: 2,
 });
+const person3 = personModel.build({
+    name: "jane doe",
+    age: 3,
+});
 
 console.log(personModel.list());
 
@@ -29,3 +33,7 @@ console.log(personModel.get(person2.id));
 person2.save();
 
 console.log(personModel.get(person2.id));
+
+person3.save();
+
+console.log(personModel.list());

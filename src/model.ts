@@ -16,25 +16,29 @@ export default class Model<T extends Schema> {
     /**
      * Creates a new instance of the model
      */
-    build(instance?: T): T {
+    build(instance?: Omit<T, keyof Schema>): T {
         if (!instance) {
             instance = {} as T;
         }
+        const instanceOfSchema = instance as T;
 
-        instance.save = () => {
-            if (instance.id) {
-                return this.localStorageCrud.update(instance.id, instance);
+        instanceOfSchema.save = () => {
+            if (instanceOfSchema.id) {
+                return this.localStorageCrud.update(
+                    instanceOfSchema.id,
+                    instanceOfSchema
+                );
             } else {
-                return this.localStorageCrud.create(instance);
+                return this.localStorageCrud.create(instanceOfSchema);
             }
         };
-        instance.delete = () => {
-            if (instance.id) {
-                this.localStorageCrud.delete(instance.id);
+        instanceOfSchema.delete = () => {
+            if (instanceOfSchema.id) {
+                this.localStorageCrud.delete(instanceOfSchema.id);
             }
         };
 
-        return instance;
+        return instanceOfSchema;
     }
 
     /**
