@@ -1,5 +1,5 @@
 {
-    "name": "localstorage-crud",
+    "name": "localstorage-db",
     "version": "1.0.0",
     "description": "Basic CRUD feature using localStorage",
     "main": "index.ts",
@@ -8,14 +8,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/johnreybacal/localstorage-crud.git"
+        "url": "git+https://github.com/johnreybacal/localstorage-db.git"
     },
     "author": "Johnrey Bacal",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/johnreybacal/localstorage-crud/issues"
+        "url": "https://github.com/johnreybacal/localstorage-db/issues"
     },
-    "homepage": "https://github.com/johnreybacal/localstorage-crud#readme",
+    "homepage": "https://github.com/johnreybacal/localstorage-db#readme",
     "devDependencies": {
         "node-localstorage": "^3.0.5",
         "ts-node": "^10.9.1",

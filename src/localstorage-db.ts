@@ -5,7 +5,7 @@ if (typeof window === "undefined") {
     global.localStorage = new LocalStorage("./data");
 }
 
-export default class LocalStorageCrud<T extends Schema> {
+export default class LocalStorageDb<T extends Schema> {
     protected modelName: string;
     private realModelName: string;
 

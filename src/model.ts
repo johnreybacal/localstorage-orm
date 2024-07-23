@@ -1,16 +1,16 @@
-import LocalStorageCrud from "./localstorage-crud";
+import LocalStorageDb from "./localstorage-db";
 import Schema from "./schema";
 
 export default class Model<T extends Schema> {
     protected modelName: string;
-    private localStorageCrud: LocalStorageCrud<T>;
+    private localStorageCrud: LocalStorageDb<T>;
 
     /**
      * Create a new model
      */
     constructor(modelName: string) {
         this.modelName = modelName;
-        this.localStorageCrud = new LocalStorageCrud<T>(this.modelName);
+        this.localStorageCrud = new LocalStorageDb<T>(this.modelName);
     }
 
     /**
