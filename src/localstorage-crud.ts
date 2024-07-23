@@ -12,6 +12,10 @@ export default class LocalStorageCrud<T extends Schema> {
         this.modelName = `localstorage-crud-model-${modelName}`;
     }
 
+    /**
+     * Fetches all records in the model
+     * @returns array of records
+     */
     public list(): T[] {
         const idList = this.getIdList();
         const data: T[] = [];
@@ -23,12 +27,22 @@ export default class LocalStorageCrud<T extends Schema> {
         return data;
     }
 
+    /**
+     * Fetch a specific record based on ID
+     * @param id ID of the record
+     * @returns specific record
+     */
     public get(id: string): T {
         const json = JSON.parse(localStorage.getItem(id) ?? "{}");
 
         return Object.keys.length ? json : undefined;
     }
 
+    /**
+     * Create a new record in the model
+     * @param data record to create
+     * @returns record created
+     */
     public create(data: T) {
         data.id = crypto.randomUUID();
 
@@ -42,6 +56,12 @@ export default class LocalStorageCrud<T extends Schema> {
         return data;
     }
 
+    /**
+     * Update an existing record based on ID
+     * @param id ID of the record
+     * @param data record to update
+     * @returns record updated
+     */
     public update(id: string, data: T) {
         const dataToUpdate = this.get(id);
         if (!dataToUpdate) {
@@ -53,6 +73,10 @@ export default class LocalStorageCrud<T extends Schema> {
         return data;
     }
 
+    /**
+     * Delete a record based on ID
+     * @param id ID of the record
+     */
     public delete(id: string) {
         const dataToUpdate = this.get(id);
         if (!dataToUpdate) {
@@ -66,6 +90,9 @@ export default class LocalStorageCrud<T extends Schema> {
         localStorage.removeItem(id);
     }
 
+    /**
+     * Deletes all records in the model
+     */
     public truncate() {
         const idList = this.getIdList();
 
@@ -74,11 +101,19 @@ export default class LocalStorageCrud<T extends Schema> {
         });
     }
 
+    /**
+     * Fetches all ID of model
+     * @returns array of ID of model
+     */
     private getIdList(): Array<string> {
         return JSON.parse(localStorage.getItem(this.modelName) ?? "[]") ?? [];
     }
 
+    /**
+     * Save modified list of IDs
+     * @param idList modified list of IDs
+     */
     private saveIdList(idList: Array<string>) {
-        return localStorage.setItem(this.modelName, JSON.stringify(idList));
+        localStorage.setItem(this.modelName, JSON.stringify(idList));
     }
 }
