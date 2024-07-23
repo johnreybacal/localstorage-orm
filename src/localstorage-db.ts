@@ -49,8 +49,6 @@ export default class LocalStorageDb<T extends Schema> {
      * @returns record created
      */
     public create(record: T) {
-        record.id = crypto.randomUUID();
-
         const idList = this.getIdList();
         idList.push(record.id);
 
@@ -58,6 +56,15 @@ export default class LocalStorageDb<T extends Schema> {
         this.saveIdList(idList);
 
         return record;
+    }
+
+    public bulkCreate(records: T[]) {
+        const createdRecords: T[] = [];
+        records.forEach((record) => {
+            createdRecords.push(this.create(record));
+        });
+
+        return createdRecords;
     }
 
     /**

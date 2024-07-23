@@ -30,16 +30,51 @@ const person3 = personModel.build({
     hobbies: ["acting"],
 });
 
-console.log(personModel.list());
-
 person2.name = "ghege";
-
-console.log(personModel.get(person2.id));
 
 person2.save();
 
-console.log(personModel.get(person2.id));
-
 person3.save();
+
+personModel.create([
+    {
+        name: "1",
+        age: 1,
+        hobbies: [],
+    },
+    {
+        name: "2",
+        age: 2,
+        hobbies: [],
+    },
+    {
+        name: "3",
+        age: 3,
+        hobbies: [],
+    },
+]);
+
+const persons = personModel.build([
+    {
+        name: "4",
+        age: 4,
+        hobbies: [],
+    },
+    {
+        name: "5",
+        age: 5,
+        hobbies: [],
+    },
+    {
+        name: "6",
+        age: 6,
+        hobbies: [],
+    },
+]);
+
+persons[0].save();
+persons[1].name = "Not 5";
+persons[1].save();
+persons[0].delete();
 
 console.log(personModel.list());

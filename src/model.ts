@@ -23,7 +23,34 @@ export default class Model<T extends Schema> {
     /**
      * Creates a new instance of the model
      */
-    build(instance?: Omit<T, keyof Schema>): T {
+    build(instance?: Omit<T, keyof Schema>): T;
+
+    /**
+     * Creates a list of instances of the model
+     */
+    build(instances: Omit<T, keyof Schema>[]): T[];
+
+    /**
+     * Overloading implementation
+     */
+    build(param?: Omit<T, keyof Schema> | Omit<T, keyof Schema>[]): T | T[] {
+        if (param && Array.isArray(param)) {
+            const builtInstances: T[] = [];
+
+            param.forEach((p) => {
+                builtInstances.push(this.#build(p));
+            });
+
+            return builtInstances;
+        } else {
+            return this.#build(param);
+        }
+    }
+
+    /**
+     * Creates a new instance of the model
+     */
+    #build(instance?: Omit<T, keyof Schema>): T {
         if (!instance) {
             instance = {} as T;
         }
@@ -32,15 +59,15 @@ export default class Model<T extends Schema> {
         instanceOfSchema.save = () => {
             if (instanceOfSchema.id) {
                 this.setUpdateTimestamp(instanceOfSchema);
+
                 return this.localStorageCrud.update(
                     instanceOfSchema.id,
                     instanceOfSchema
                 );
             } else {
-                this.setCreateTimestamp(instanceOfSchema as T);
-                if (this.modelSettings.timestamps) {
-                    instanceOfSchema.createdAt = new Date();
-                }
+                this.setCreateTimestamp(instanceOfSchema);
+                instanceOfSchema.id = crypto.randomUUID();
+
                 return this.localStorageCrud.create(instanceOfSchema);
             }
         };
@@ -60,7 +87,7 @@ export default class Model<T extends Schema> {
      * @returns array of records
      */
     list() {
-        return this.localStorageCrud.list().map(this.build);
+        return this.build(this.localStorageCrud.list());
     }
 
     /**
@@ -69,7 +96,7 @@ export default class Model<T extends Schema> {
      * @returns specific record
      */
     get(id: string) {
-        return this.build(this.localStorageCrud.get(id));
+        return this.#build(this.localStorageCrud.get(id));
     }
 
     /**
@@ -77,9 +104,33 @@ export default class Model<T extends Schema> {
      * @param record record to create
      * @returns record created
      */
-    create(record: Omit<T, keyof Schema>) {
-        this.setCreateTimestamp(record as T);
-        return this.build(this.localStorageCrud.create(record as T));
+    create(record: Omit<T, keyof Schema>): T;
+
+    /**
+     * Bulk insert a list of records
+     * @param records list to bulk create
+     * @returns records created
+     */
+    create(records: Omit<T, keyof Schema>[]): T[];
+
+    /**
+     * Overloading implementation
+     */
+    create(param: Omit<T, keyof Schema> | Omit<T, keyof Schema>[]): T | T[] {
+        if (Array.isArray(param)) {
+            const instanceRecords = param as T[];
+            instanceRecords.forEach((record) => {
+                record.id = crypto.randomUUID();
+                this.setCreateTimestamp(record);
+            });
+            return this.localStorageCrud.bulkCreate(instanceRecords);
+        } else {
+            const instanceRecord = param as T;
+            this.setCreateTimestamp(instanceRecord);
+            instanceRecord.id = crypto.randomUUID();
+
+            return this.build(this.localStorageCrud.create(instanceRecord));
+        }
     }
 
     /**
