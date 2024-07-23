@@ -3,6 +3,7 @@ import { Model, Schema } from "./src";
 interface Person extends Schema {
     name: string;
     age: number;
+    hobbies: string[];
 }
 const personModel = new Model<Person>("person");
 personModel.truncate();
@@ -17,10 +18,12 @@ person.save();
 const person2 = personModel.create({
     name: "john doe",
     age: 2,
+    hobbies: [],
 });
 const person3 = personModel.build({
     name: "jane doe",
     age: 3,
+    hobbies: ["acting"],
 });
 
 console.log(personModel.list());

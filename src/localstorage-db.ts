@@ -20,13 +20,16 @@ export default class LocalStorageDb<T extends Schema> {
      */
     public list(): T[] {
         const idList = this.getIdList();
-        const data: T[] = [];
+        const records: T[] = [];
 
         idList.forEach((id: string) => {
-            data.push(this.get(id));
+            const record = this.get(id);
+            if (record) {
+                records.push(record);
+            }
         });
 
-        return data;
+        return records;
     }
 
     /**
@@ -34,45 +37,45 @@ export default class LocalStorageDb<T extends Schema> {
      * @param id ID of the record
      * @returns specific record
      */
-    public get(id: string): T {
-        const json = JSON.parse(localStorage.getItem(id) ?? "{}");
+    public get(id: string): T | undefined {
+        const record = JSON.parse(localStorage.getItem(id) ?? "{}") as T;
 
-        return Object.keys.length ? json : undefined;
+        return record.id ? record : undefined;
     }
 
     /**
      * Create a new record in the model
-     * @param data record to create
+     * @param record record to create
      * @returns record created
      */
-    public create(data: T) {
-        data.id = crypto.randomUUID();
+    public create(record: T) {
+        record.id = crypto.randomUUID();
 
         const idList = this.getIdList();
-        idList.push(data.id);
+        idList.push(record.id);
         this.saveIdList(idList);
 
-        data.createdAt = new Date();
-        localStorage.setItem(data.id, JSON.stringify(data));
+        record.createdAt = new Date();
+        localStorage.setItem(record.id, JSON.stringify(record));
 
-        return data;
+        return record;
     }
 
     /**
      * Update an existing record based on ID
      * @param id ID of the record
-     * @param data record to update
+     * @param record record to update
      * @returns record updated
      */
-    public update(id: string, data: T) {
-        const dataToUpdate = this.get(id);
-        if (!dataToUpdate) {
+    public update(id: string, record: T) {
+        const recordToUpdate = this.get(id);
+        if (!recordToUpdate) {
             throw Error(`${this.realModelName} does not exist`);
         }
-        data.updatedAt = new Date();
-        localStorage.setItem(id, JSON.stringify(data));
+        record.updatedAt = new Date();
+        localStorage.setItem(id, JSON.stringify(record));
 
-        return data;
+        return record;
     }
 
     /**
@@ -80,8 +83,8 @@ export default class LocalStorageDb<T extends Schema> {
      * @param id ID of the record
      */
     public delete(id: string) {
-        const dataToUpdate = this.get(id);
-        if (!dataToUpdate) {
+        const recordToDelete = this.get(id);
+        if (!recordToDelete) {
             throw Error(`${this.realModelName} does not exist`);
         }
 

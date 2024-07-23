@@ -60,21 +60,21 @@ export default class Model<T extends Schema> {
 
     /**
      * Create a new record in the model
-     * @param data record to create
+     * @param record record to create
      * @returns record created
      */
-    create(data: Omit<T, keyof Schema>) {
-        return this.build(this.localStorageCrud.create(data as T));
+    create(record: Omit<T, keyof Schema>) {
+        return this.build(this.localStorageCrud.create(record as T));
     }
 
     /**
      * Update an existing record based on ID
      * @param id ID of the record
-     * @param data record to update
+     * @param record record to update
      * @returns record updated
      */
-    update(id: string, data: T) {
-        return this.build(this.localStorageCrud.update(id, data));
+    update(id: string, record: T) {
+        return this.build(this.localStorageCrud.update(id, record));
     }
 
     /**
