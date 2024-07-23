@@ -27,7 +27,7 @@ export default class LocalStorageCrud {
     }
 
     public create(model: any) {
-        model.id = Math.random().toString(16).slice(2);
+        model.id = crypto.randomUUID();
 
         const idList = this.getIdList();
         idList.push(model.id);

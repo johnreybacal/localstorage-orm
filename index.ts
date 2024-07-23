@@ -1,4 +1,4 @@
-import LocalStorageCrud from "./src";
+import LocalStorageCrud from "./src/localstorage-crud";
 
 const personModel = new LocalStorageCrud("person");
 
