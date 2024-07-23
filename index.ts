@@ -1,5 +1,4 @@
-import Model from "./src/model";
-import Schema from "./src/schema";
+import { Model, Schema } from "./src";
 
 interface Person extends Schema {
     name: string;
