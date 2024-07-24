@@ -7,11 +7,9 @@ if (typeof window === "undefined") {
 
 export default class LocalStorageDb<T extends Schema> {
     protected modelName: string;
-    private realModelName: string;
 
     constructor(modelName: string) {
-        this.realModelName = modelName;
-        this.modelName = `localstorage-crud-model-${modelName}`;
+        this.modelName = `localstorage-db-model-${modelName}`;
     }
 
     /**

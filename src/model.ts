@@ -1,12 +1,12 @@
 import InstanceMethods from "./instanceMethods";
-import LocalStorageDb from "./localstorage-db";
+import LocalStorageDb from "./localStorageDb";
 import ModelSettings from "./modelSettings";
 import Schema from "./schema";
 import Schemas from "./schemas";
 
 export default class Model<T extends Schema> {
     protected modelName: string;
-    private localStorageCrud: LocalStorageDb<T>;
+    private localStorageDb: LocalStorageDb<T>;
     private modelSettings: ModelSettings;
     private instanceMethods: InstanceMethods<T>;
 
@@ -15,7 +15,7 @@ export default class Model<T extends Schema> {
      */
     constructor(modelName: string, modelSettings?: ModelSettings) {
         this.modelName = modelName;
-        this.localStorageCrud = new LocalStorageDb<T>(this.modelName);
+        this.localStorageDb = new LocalStorageDb<T>(this.modelName);
 
         this.modelSettings = modelSettings ?? {
             timestamps: false,
@@ -23,7 +23,7 @@ export default class Model<T extends Schema> {
         };
 
         this.instanceMethods = new InstanceMethods<T>(
-            this.localStorageCrud,
+            this.localStorageDb,
             this.modelSettings
         );
     }
@@ -64,11 +64,11 @@ export default class Model<T extends Schema> {
      * @returns array of records
      */
     list() {
-        return this.build(this.localStorageCrud.list());
+        return this.build(this.localStorageDb.list());
     }
 
     find(filter: Partial<T>) {
-        return this.build(this.localStorageCrud.find(filter));
+        return this.build(this.localStorageDb.find(filter));
     }
 
     /**
@@ -77,7 +77,7 @@ export default class Model<T extends Schema> {
      * @returns specific record
      */
     get(id: string) {
-        return this.build(this.localStorageCrud.get(id));
+        return this.build(this.localStorageDb.get(id));
     }
 
     /**
@@ -104,13 +104,13 @@ export default class Model<T extends Schema> {
                 record.id = crypto.randomUUID();
                 this.setCreateTimestamp(record);
             });
-            return this.localStorageCrud.bulkCreate(instanceRecords);
+            return this.localStorageDb.bulkCreate(instanceRecords);
         } else {
             const instanceRecord = param as T;
             this.setCreateTimestamp(instanceRecord);
             instanceRecord.id = crypto.randomUUID();
 
-            return this.build(this.localStorageCrud.create(instanceRecord));
+            return this.build(this.localStorageDb.create(instanceRecord));
         }
     }
 
@@ -122,7 +122,7 @@ export default class Model<T extends Schema> {
      */
     update(id: string, record: T) {
         this.setUpdateTimestamp(record);
-        return this.build(this.localStorageCrud.update(id, record));
+        return this.build(this.localStorageDb.update(id, record));
     }
 
     /**
@@ -131,9 +131,9 @@ export default class Model<T extends Schema> {
      */
     delete(id: string) {
         if (this.modelSettings.softDelete) {
-            this.localStorageCrud.softDelete(id);
+            this.localStorageDb.softDelete(id);
         } else {
-            this.localStorageCrud.delete(id);
+            this.localStorageDb.delete(id);
         }
     }
 
@@ -141,7 +141,7 @@ export default class Model<T extends Schema> {
      * Deletes all records in the model
      */
     truncate() {
-        this.localStorageCrud.truncate();
+        this.localStorageDb.truncate();
     }
 
     private setCreateTimestamp(record: T) {

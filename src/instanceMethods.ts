@@ -1,16 +1,16 @@
-import LocalStorageDb from "./localstorage-db";
+import LocalStorageDb from "./localStorageDb";
 import ModelSettings from "./modelSettings";
 import Schema from "./schema";
 
 export default class InstanceMethods<T extends Schema> {
-    private localStorageCrud: LocalStorageDb<T>;
+    private localStorageDb: LocalStorageDb<T>;
     private modelSettings: ModelSettings;
 
     constructor(
         localStorageCrud: LocalStorageDb<T>,
         modelSettings: ModelSettings
     ) {
-        this.localStorageCrud = localStorageCrud;
+        this.localStorageDb = localStorageCrud;
         this.modelSettings = modelSettings;
     }
 
@@ -45,26 +45,23 @@ export default class InstanceMethods<T extends Schema> {
         if (record.id) {
             this.setUpdateTimestamp(record);
 
-            const updatedRecord = this.localStorageCrud.update(
-                record.id,
-                record
-            );
+            const updatedRecord = this.localStorageDb.update(record.id, record);
 
             return this.build(updatedRecord);
         } else {
             this.setCreateTimestamp(record);
             record.id = crypto.randomUUID();
 
-            const createdRecord = this.localStorageCrud.create(record);
+            const createdRecord = this.localStorageDb.create(record);
 
             return this.build(createdRecord);
         }
     }
     public delete(record: T) {
         if (this.modelSettings.softDelete) {
-            this.localStorageCrud.softDelete(record.id);
+            this.localStorageDb.softDelete(record.id);
         } else {
-            this.localStorageCrud.delete(record.id);
+            this.localStorageDb.delete(record.id);
         }
     }
 }
