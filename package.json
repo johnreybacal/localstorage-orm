@@ -1,7 +1,7 @@
 {
     "name": "localstorage-orm",
     "version": "1.0.0",
-    "description": "Interact with localStorage as we with an ORM.",
+    "description": "Interact with localStorage as we would with an ORM.",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "files": [

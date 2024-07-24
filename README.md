@@ -1,6 +1,6 @@
 # localstorage-orm
 
-Interact with localStorage as we with an ORM.
+Interact with localStorage as we would with an ORM.
 
 ## Setup
 
