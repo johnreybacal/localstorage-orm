@@ -74,6 +74,7 @@ export default class LocalStorageDb<T extends Schema> {
      * @returns record updated
      */
     public update(id: string, record: T) {
+        record.id = id;
         localStorage.setItem(id, JSON.stringify(record));
 
         return record;

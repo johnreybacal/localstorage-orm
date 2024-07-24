@@ -1,11 +1,14 @@
+import InstanceMethods from "./instanceMethods";
 import LocalStorageDb from "./localstorage-db";
 import ModelSettings from "./modelSettings";
-import Schema, { Schemas } from "./schema";
+import Schema from "./schema";
+import Schemas from "./schemas";
 
 export default class Model<T extends Schema> {
     protected modelName: string;
     private localStorageCrud: LocalStorageDb<T>;
     private modelSettings: ModelSettings;
+    private instanceMethods: InstanceMethods<T>;
 
     /**
      * Create a new model
@@ -18,6 +21,11 @@ export default class Model<T extends Schema> {
             timestamps: false,
             softDelete: false,
         };
+
+        this.instanceMethods = new InstanceMethods<T>(
+            this.localStorageCrud,
+            this.modelSettings
+        );
     }
 
     /**
@@ -34,57 +42,21 @@ export default class Model<T extends Schema> {
      * Overloading implementation
      */
     build(
-        param?: Omit<T, keyof Schema> | Omit<T, keyof Schema>[]
+        params?: Omit<T, keyof Schema> | Omit<T, keyof Schema>[]
     ): T | Schemas<T> {
-        if (param && Array.isArray(param)) {
+        if (params && Array.isArray(params)) {
             const builtInstances: Schemas<T> = new Schemas<T>(
-                this.localStorageCrud,
-                this.modelSettings
+                this.instanceMethods
             );
 
-            param.forEach((p) => {
-                builtInstances.push(this.#build(p));
+            params.forEach((param) => {
+                builtInstances.push(this.instanceMethods.build(param));
             });
 
             return builtInstances;
         } else {
-            return this.#build(param);
+            return this.instanceMethods.build(params as Omit<T, keyof Schema>);
         }
-    }
-
-    /**
-     * Creates a new instance of the model
-     */
-    #build(instance?: Omit<T, keyof Schema>): T {
-        if (!instance) {
-            instance = {} as T;
-        }
-        const instanceOfSchema = instance as T;
-
-        instanceOfSchema.save = () => {
-            if (instanceOfSchema.id) {
-                this.setUpdateTimestamp(instanceOfSchema);
-
-                return this.localStorageCrud.update(
-                    instanceOfSchema.id,
-                    instanceOfSchema
-                );
-            } else {
-                this.setCreateTimestamp(instanceOfSchema);
-                instanceOfSchema.id = crypto.randomUUID();
-
-                return this.localStorageCrud.create(instanceOfSchema);
-            }
-        };
-        instanceOfSchema.delete = () => {
-            if (this.modelSettings.softDelete) {
-                this.localStorageCrud.softDelete(instanceOfSchema.id);
-            } else {
-                this.localStorageCrud.delete(instanceOfSchema.id);
-            }
-        };
-
-        return instanceOfSchema;
     }
 
     /**
@@ -101,7 +73,7 @@ export default class Model<T extends Schema> {
      * @returns specific record
      */
     get(id: string) {
-        return this.#build(this.localStorageCrud.get(id));
+        return this.build(this.localStorageCrud.get(id));
     }
 
     /**
