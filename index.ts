@@ -77,4 +77,10 @@ persons[1].name = "Not 5";
 persons[1].save();
 persons[0].delete();
 
-console.log(personModel.list());
+persons.save();
+
+const personss = personModel.list();
+
+personss[1].name = "PERSON 1";
+
+personss.save();

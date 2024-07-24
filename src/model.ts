@@ -1,6 +1,6 @@
 import LocalStorageDb from "./localstorage-db";
 import ModelSettings from "./modelSettings";
-import Schema from "./schema";
+import Schema, { Schemas } from "./schema";
 
 export default class Model<T extends Schema> {
     protected modelName: string;
@@ -28,14 +28,19 @@ export default class Model<T extends Schema> {
     /**
      * Creates a list of instances of the model
      */
-    build(instances: Omit<T, keyof Schema>[]): T[];
+    build(instances: Omit<T, keyof Schema>[]): Schemas<T>;
 
     /**
      * Overloading implementation
      */
-    build(param?: Omit<T, keyof Schema> | Omit<T, keyof Schema>[]): T | T[] {
+    build(
+        param?: Omit<T, keyof Schema> | Omit<T, keyof Schema>[]
+    ): T | Schemas<T> {
         if (param && Array.isArray(param)) {
-            const builtInstances: T[] = [];
+            const builtInstances: Schemas<T> = new Schemas<T>(
+                this.localStorageCrud,
+                this.modelSettings
+            );
 
             param.forEach((p) => {
                 builtInstances.push(this.#build(p));
