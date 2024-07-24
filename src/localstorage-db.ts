@@ -32,6 +32,31 @@ export default class LocalStorageDb<T extends Schema> {
         return records;
     }
 
+    public find(filter: Partial<T>): T[] {
+        const idList = this.getIdList();
+        const filteredRecords: T[] = [];
+
+        idList.forEach((id: string) => {
+            const record = this.get(id);
+            if (record) {
+                const keys = Object.keys(filter);
+
+                let match = true;
+                for (const key of keys) {
+                    if (record[key] != filter[key]) {
+                        match = false;
+                        break;
+                    }
+                }
+
+                if (match) {
+                    filteredRecords.push(record);
+                }
+            }
+        });
+        return filteredRecords;
+    }
+
     /**
      * Fetch a specific record based on ID
      * @param id ID of the record

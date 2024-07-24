@@ -67,6 +67,10 @@ export default class Model<T extends Schema> {
         return this.build(this.localStorageCrud.list());
     }
 
+    find(filter: Partial<T>) {
+        return this.build(this.localStorageCrud.find(filter));
+    }
+
     /**
      * Fetch a specific record based on ID
      * @param id ID of the record

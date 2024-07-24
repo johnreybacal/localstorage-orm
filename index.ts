@@ -7,7 +7,8 @@ interface Person extends Schema {
     hobbies: string[];
 }
 const modelSettings: ModelSettings = {
-    timestamps: true,
+    timestamps: false,
+    softDelete: true,
 };
 const personModel = new Model<Person>("person", modelSettings);
 personModel.truncate();
@@ -44,12 +45,12 @@ personModel.create([
     },
     {
         name: "2",
-        age: 2,
+        age: 1,
         hobbies: [],
     },
     {
         name: "3",
-        age: 3,
+        age: 1,
         hobbies: [],
     },
 ]);
@@ -84,3 +85,9 @@ const personss = personModel.list();
 personss[1].name = "PERSON 1";
 
 personss.save();
+
+const personWithAge1 = personModel.find({
+    age: 1,
+});
+
+personWithAge1.delete();
