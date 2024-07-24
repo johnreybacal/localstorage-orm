@@ -74,11 +74,6 @@ export default class LocalStorageDb<T extends Schema> {
      * @returns record updated
      */
     public update(id: string, record: T) {
-        const recordToUpdate = this.get(id);
-        if (!recordToUpdate) {
-            throw Error(`${this.realModelName} does not exist`);
-        }
-
         localStorage.setItem(id, JSON.stringify(record));
 
         return record;
@@ -89,11 +84,6 @@ export default class LocalStorageDb<T extends Schema> {
      * @param id ID of the record
      */
     public delete(id: string) {
-        const recordToDelete = this.get(id);
-        if (!recordToDelete) {
-            throw Error(`${this.realModelName} does not exist`);
-        }
-
         const idList = this.getIdList();
         idList.splice(idList.indexOf(id), 1);
 
@@ -107,13 +97,12 @@ export default class LocalStorageDb<T extends Schema> {
      */
     public softDelete(id: string) {
         const record = this.get(id);
-        if (!record) {
-            throw Error(`${this.realModelName} does not exist`);
+
+        if (record) {
+            record.isDeleted = true;
+
+            localStorage.setItem(id, JSON.stringify(record));
         }
-
-        record.isDeleted = true;
-
-        localStorage.setItem(id, JSON.stringify(record));
     }
 
     /**
