@@ -82,7 +82,7 @@ personAged24.save();
 johnDoe.delete();
 
 // Deletes a list of instance
-personAged25.delete();
+personAged24.delete();
 ```
 
 ## Model Settings
