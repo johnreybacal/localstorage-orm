@@ -1,7 +1,7 @@
 {
-    "name": "localstorage-db",
+    "name": "localstorage-orm",
     "version": "1.0.0",
-    "description": "Interact with localStorage as we would on a database, or at least packages that interacts with databases!",
+    "description": "Interact with localStorage as we with an ORM.",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "files": [
@@ -9,7 +9,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/johnreybacal/localstorage-db.git"
+        "url": "git+https://github.com/johnreybacal/localstorage-orm.git"
     },
     "author": "Johnrey Bacal",
     "license": "ISC",
@@ -21,9 +21,9 @@
         "orm"
     ],
     "bugs": {
-        "url": "https://github.com/johnreybacal/localstorage-db/issues"
+        "url": "https://github.com/johnreybacal/localstorage-orm/issues"
     },
-    "homepage": "https://github.com/johnreybacal/localstorage-db#readme",
+    "homepage": "https://github.com/johnreybacal/localstorage-orm#readme",
     "devDependencies": {
         "node-localstorage": "^3.0.5",
         "ts-node": "^10.9.1",
