@@ -91,3 +91,12 @@ const personWithAge1 = personModel.find({
 });
 
 personWithAge1.delete();
+
+const janeDoe = personModel.findOne({ name: "jane doe" });
+
+if (janeDoe) {
+    console.log(janeDoe);
+    janeDoe.age = 33;
+    janeDoe.save();
+    console.log(personModel.findById(janeDoe.id));
+}

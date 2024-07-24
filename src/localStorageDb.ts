@@ -30,11 +30,11 @@ export default class LocalStorageDb<T extends Schema> {
         return records;
     }
 
-    public find(filter: Partial<T>): T[] {
+    public find(filter: Partial<T>, isFindOne = false): T[] {
         const idList = this.getIdList();
         const filteredRecords: T[] = [];
 
-        idList.forEach((id: string) => {
+        for (const id of idList) {
             const record = this.get(id);
             if (record) {
                 const keys = Object.keys(filter);
@@ -48,10 +48,15 @@ export default class LocalStorageDb<T extends Schema> {
                 }
 
                 if (match) {
+                    console.log(record);
                     filteredRecords.push(record);
+
+                    if (isFindOne) {
+                        break;
+                    }
                 }
             }
-        });
+        }
         return filteredRecords;
     }
 

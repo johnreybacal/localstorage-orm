@@ -71,6 +71,23 @@ export default class Model<T extends Schema> {
         return this.build(this.localStorageDb.find(filter));
     }
 
+    findOne(filter: Partial<T>) {
+        const filtered = this.localStorageDb.find(filter, true);
+        console.log(filter, filtered);
+        if (filtered) {
+            return this.build(filtered[0]);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Fetch a specific record based on ID
+     * @param id ID of the record
+     * @returns specific record
+     */
+    findById = (id: string) => this.get(id);
+
     /**
      * Fetch a specific record based on ID
      * @param id ID of the record
