@@ -1,17 +1,25 @@
 {
     "name": "localstorage-db",
     "version": "1.0.0",
-    "description": "Basic CRUD feature using localStorage",
-    "main": "index.ts",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
+    "description": "Interact with localStorage as we would on a database, or at least packages that interacts with databases!",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
     "repository": {
         "type": "git",
         "url": "git+https://github.com/johnreybacal/localstorage-db.git"
     },
     "author": "Johnrey Bacal",
     "license": "ISC",
+    "keywords": [
+        "db",
+        "database",
+        "localStorage",
+        "crud",
+        "orm"
+    ],
     "bugs": {
         "url": "https://github.com/johnreybacal/localstorage-db/issues"
     },
