@@ -1,11 +1,11 @@
-# localstorage-db
+# localstorage-orm
 
-Interact with localStorage as we would on a database, or at least packages that interacts with databases!
+Interact with localStorage as we with an ORM.
 
 ## Setup
 
 ```typescript
-import { Model, Schema } from "localstorage-db";
+import { Model, Schema } from "localstorage-orm";
 
 const result = await psgcReader.read(filePath);
 
