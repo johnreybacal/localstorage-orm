@@ -145,18 +145,18 @@ describe.each([
     }
 );
 
-// describe.each([
-//     [
-//         {},
-//         {
-//             timestamps: true,
-//             softDelete: true,
-//         },
-//     ],
-// ])(`Basic functions: Fetching`, (modelSettings: ModelSettings) => {
-//     test("List", () => {
-//         const personModel = createPersonModel(modelSettings);
+describe.each([
+    [
+        {},
+        {
+            timestamps: true,
+            softDelete: true,
+        },
+    ],
+])(`Basic functions: Fetching`, (modelSettings: ModelSettings) => {
+    test("List", () => {
+        const personModel = createPersonModel(modelSettings);
 
-//         // personModel.
-//     });
-// });
+        // personModel.
+    });
+});
