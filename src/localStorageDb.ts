@@ -1,9 +1,4 @@
-import { LocalStorage } from "node-localstorage";
 import Schema from "./schema";
-
-if (typeof window === "undefined") {
-    global.localStorage = new LocalStorage("./data");
-}
 
 export default class LocalStorageDb<T extends Schema> {
     protected modelName: string;
@@ -149,7 +144,12 @@ export default class LocalStorageDb<T extends Schema> {
      * @returns array of ID of model
      */
     private getIdList(): Array<string> {
-        return JSON.parse(localStorage.getItem(this.modelName) ?? "[]") ?? [];
+        const idList = localStorage.getItem(this.modelName);
+        if (idList) {
+            return JSON.parse(idList);
+        } else {
+            return [];
+        }
     }
 
     /**

@@ -1,5 +1,11 @@
+import { LocalStorage } from "node-localstorage";
 import { Model, Schema } from "./src";
 import ModelSettings from "./src/modelSettings";
+export default () => {
+    if (typeof window === "undefined") {
+        global.localStorage = new LocalStorage("./data");
+    }
+};
 
 interface Person extends Schema {
     name: string;
