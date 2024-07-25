@@ -7,8 +7,6 @@ Interact with localStorage as we would with an ORM.
 ```typescript
 import { Model, Schema } from "localstorage-orm";
 
-const result = await psgcReader.read(filePath);
-
 // Define the schema
 interface Person extends Schema {
     name: string;
