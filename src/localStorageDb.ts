@@ -48,7 +48,6 @@ export default class LocalStorageDb<T extends Schema> {
                 }
 
                 if (match) {
-                    console.log(record);
                     filteredRecords.push(record);
 
                     if (isFindOne) {
