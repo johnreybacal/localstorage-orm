@@ -1,4 +1,5 @@
 import Model from "./model";
+import ModelSettings from "./modelSettings";
 import Schema from "./schema";
 
-export { Model, Schema };
+export { Model, ModelSettings, Schema };
