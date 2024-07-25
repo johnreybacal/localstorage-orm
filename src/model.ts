@@ -109,19 +109,21 @@ export default class Model<T extends Schema> {
      * @param records list to bulk create
      * @returns records created
      */
-    create(records: Omit<T, keyof Schema>[]): T[];
+    create(records: Omit<T, keyof Schema>[]): Schemas<T>;
 
     /**
      * Overloading implementation
      */
-    create(param: Omit<T, keyof Schema> | Omit<T, keyof Schema>[]): T | T[] {
+    create(
+        param: Omit<T, keyof Schema> | Omit<T, keyof Schema>[]
+    ): T | Schemas<T> {
         if (Array.isArray(param)) {
             const instanceRecords = param as T[];
             instanceRecords.forEach((record) => {
                 record.id = crypto.randomUUID();
                 this.setCreateTimestamp(record);
             });
-            return this.localStorageDb.bulkCreate(instanceRecords);
+            return this.build(this.localStorageDb.bulkCreate(instanceRecords));
         } else {
             const instanceRecord = param as T;
             this.setCreateTimestamp(instanceRecord);

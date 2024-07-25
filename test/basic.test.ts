@@ -2,30 +2,39 @@ import { describe, expect, test } from "@jest/globals";
 import { Model, Schema } from "../src";
 import ModelSettings from "../src/modelSettings";
 
+interface Person extends Schema {
+    name: string;
+    age: number;
+}
 const createPersonModel = (modelSettings?: ModelSettings) => {
-    interface Person extends Schema {
-        name: string;
-        age: number;
-    }
     const personModel = new Model<Person>("person", modelSettings);
     return personModel;
 };
 
-describe("localstorage-orm", () => {
+describe.each([
+    [
+        {},
+        {
+            timestamps: true,
+            softDelete: true,
+        },
+    ],
+])(`Basic functions: Creating`, (modelSettings: ModelSettings) => {
     test("Instantiate a model", () => {
-        const personModel = createPersonModel();
+        const personModel = createPersonModel(modelSettings);
 
         expect(personModel).toBeDefined();
+        expect(personModel).toBeInstanceOf(Model);
     });
     test("Build an instance", () => {
-        const personModel = createPersonModel();
+        const personModel = createPersonModel(modelSettings);
 
         const person = personModel.build();
 
         expect(person).toBeDefined();
     });
     test("Build and save an instance", () => {
-        const personModel = createPersonModel();
+        const personModel = createPersonModel(modelSettings);
 
         const person = personModel.build();
 
@@ -37,9 +46,13 @@ describe("localstorage-orm", () => {
         expect(person.id).toBeDefined();
         expect(result.id).toBeDefined();
         expect(result).toEqual(person);
+
+        if (modelSettings.timestamps) {
+            expect(result.createdAt).toBeInstanceOf(Date);
+        }
     });
     test("Create an instance", () => {
-        const personModel = createPersonModel();
+        const personModel = createPersonModel(modelSettings);
 
         const data = {
             name: "Jane Doe",
@@ -52,5 +65,82 @@ describe("localstorage-orm", () => {
 
         expect(person.id).toBeDefined();
         expect(person).toEqual(expect.objectContaining(data));
+        if (modelSettings.timestamps) {
+            expect(person.createdAt).toBeInstanceOf(Date);
+        }
+    });
+    test("Bulk build an array of instance", () => {
+        const personModel = createPersonModel(modelSettings);
+
+        const dataArr = [
+            {
+                name: "Bulk Person 1",
+                age: 1,
+            },
+            {
+                name: "Bulk Person 2",
+                age: 2,
+            },
+        ];
+
+        const persons = personModel.build(dataArr);
+
+        expect(persons.length).toEqual(2);
+    });
+    test("Bulk build and save an array of instance", () => {
+        const personModel = createPersonModel(modelSettings);
+
+        const dataArr = [
+            {
+                name: "Bulk Person 1-1",
+                age: 1,
+            },
+            {
+                name: "Bulk Person 2-1",
+                age: 2,
+            },
+        ];
+
+        const persons = personModel.build(dataArr);
+
+        persons.save();
+
+        persons.forEach((person) => {
+            expect(person.id).toBeDefined();
+            if (modelSettings.timestamps) {
+                expect(person.createdAt).toBeInstanceOf(Date);
+            }
+        });
+    });
+    test("Bulk create an array of instance", () => {
+        const personModel = createPersonModel(modelSettings);
+
+        const dataArr = [
+            {
+                name: "Bulk Person 1-2",
+                age: 1,
+            },
+            {
+                name: "Bulk Person 2-2",
+                age: 2,
+            },
+        ];
+
+        const persons = personModel.create(dataArr);
+
+        persons.forEach((person) => {
+            expect(person.id).toBeDefined();
+            if (modelSettings.timestamps) {
+                expect(person.createdAt).toBeInstanceOf(Date);
+            }
+        });
     });
 });
+
+// describe("Basic functions: Fetching", () => {
+//     test("List", () => {
+//         const personModel = createPersonModel();
+
+//         // personModel.
+//     });
+// });
