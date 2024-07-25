@@ -28,6 +28,26 @@ describe.each(modelSettings)(
                 expect(johnDoe).toBeNull();
             }
         });
+        test("model delete", () => {
+            const personModel = createPersonModel(modelSettings);
+
+            const person = personModel.findOne({
+                name: "Jane Doe",
+            });
+            expect(person).not.toBeNull();
+            const id = person!.id;
+
+            const updatedRecord = personModel.delete(id);
+            const janeDoe = personModel.findById(id);
+
+            if (modelSettings.softDelete) {
+                expect(janeDoe).not.toBeNull();
+                expect(janeDoe).toHaveProperty("isDeleted");
+                expect(janeDoe!.isDeleted).toBe(true);
+            } else {
+                expect(janeDoe).toBeNull();
+            }
+        });
         test("bulk delete", () => {
             const personModel = createPersonModel(modelSettings);
 

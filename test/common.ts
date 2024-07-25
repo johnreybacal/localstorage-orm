@@ -37,5 +37,13 @@ export const seed = () => {
             name: "Mama Joe",
             age: 52,
         },
+        {
+            name: "Rick Roe",
+            age: 24,
+        },
+        {
+            name: "Yuki Aoe",
+            age: 24,
+        },
     ]);
 };
