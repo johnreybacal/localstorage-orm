@@ -3,12 +3,12 @@ import { Model } from "../src";
 import ModelSettings from "../src/modelSettings";
 import { clear, createPersonModel, modelSettings } from "./common";
 
-beforeAll(clear);
-afterAll(clear);
-
 describe.each(modelSettings)(
     "Basic functions: Creating [$modelSettings]",
     (modelSettings: ModelSettings) => {
+        beforeAll(clear);
+        afterAll(clear);
+
         test("Instantiate a model", () => {
             const personModel = createPersonModel(modelSettings);
 
