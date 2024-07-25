@@ -93,7 +93,12 @@ export default class Model<T extends Schema> {
      * @returns specific record
      */
     get(id: string) {
-        return this.build(this.localStorageDb.get(id));
+        const record = this.localStorageDb.get(id);
+        if (record) {
+            return this.build(this.localStorageDb.get(id));
+        } else {
+            return null;
+        }
     }
 
     /**
