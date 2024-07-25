@@ -1,15 +1,9 @@
 import { describe, expect, test } from "@jest/globals";
 import { Model } from "../src";
 import ModelSettings from "../src/modelSettings";
-import { createPersonModel } from "./common";
+import { createPersonModel, modelSettings } from "./common";
 
-describe.each([
-    {},
-    {
-        timestamps: true,
-        softDelete: true,
-    },
-])(
+describe.each(modelSettings)(
     "Basic functions: Creating [$modelSettings]",
     (modelSettings: ModelSettings) => {
         test("Instantiate a model", () => {
