@@ -143,9 +143,9 @@ export default class Model<T extends Schema> {
      * @param record record to update
      * @returns record updated
      */
-    update(id: string, record: T) {
-        this.setUpdateTimestamp(record);
-        return this.build(this.localStorageDb.update(id, record));
+    update(id: string, record: Omit<T, keyof Schema>) {
+        this.setUpdateTimestamp(record as T);
+        return this.build(this.localStorageDb.update(id, record as T));
     }
 
     /**
