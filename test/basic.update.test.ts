@@ -32,6 +32,39 @@ describe.each(modelSettings)(
             expect(johnDoe).toBeNull();
             expect(johnnyDoe).not.toBeNull();
             expect(johnnyDoe!.id).toBe(id);
+            if (modelSettings.timestamps) {
+                expect(new Date(johnnyDoe!.updatedAt)).toBeInstanceOf(Date);
+            }
+        });
+        test("model update", () => {
+            const personModel = createPersonModel(modelSettings);
+
+            const person = personModel.findOne({
+                name: "Jane Doe",
+            });
+            expect(person).not.toBeNull();
+            const id = person!.id;
+
+            const updatedRecord = personModel.update(id, {
+                name: "Jenny Doe",
+                age: 24,
+            });
+            const janeDoe = personModel.findOne({
+                name: "Jane Doe",
+            });
+            const jennyDoe = personModel.findOne({
+                name: "Jenny Doe",
+            });
+
+            expect(janeDoe).toBeNull();
+            expect(jennyDoe).not.toBeNull();
+            expect(jennyDoe!.id).toBe(id);
+            expect(updatedRecord).not.toBeNull();
+            expect(updatedRecord!.id).toBe(id);
+            if (modelSettings.timestamps) {
+                expect(new Date(jennyDoe!.updatedAt)).toBeInstanceOf(Date);
+                expect(new Date(updatedRecord!.updatedAt)).toBeInstanceOf(Date);
+            }
         });
         test("bulk update", () => {
             const personModel = createPersonModel(modelSettings);
@@ -58,6 +91,11 @@ describe.each(modelSettings)(
 
             expect(personsAged24.length).toBe(0);
             expect(personsAged25.length).toBe(length);
+            if (modelSettings.timestamps) {
+                for (const person of personsAged25) {
+                    expect(new Date(person.updatedAt)).toBeInstanceOf(Date);
+                }
+            }
         });
     }
 );
