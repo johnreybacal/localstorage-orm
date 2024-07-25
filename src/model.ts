@@ -73,7 +73,6 @@ export default class Model<T extends Schema> {
 
     findOne(filter: Partial<T>) {
         const filtered = this.localStorageDb.find(filter, true);
-        console.log(filter, filtered);
         if (filtered) {
             return this.build(filtered[0]);
         } else {
