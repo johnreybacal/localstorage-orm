@@ -1,6 +1,7 @@
 # localstorage-orm
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/johnreybacal/localstorage-orm/node.js.yml)
 ![GitHub package.json dynamic](https://img.shields.io/github/package-json/version/johnreybacal/localstorage-orm?label=npm&link=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2Flocalstorage-orm)
+![Codecov](https://img.shields.io/codecov/c/github/johnreybacal/localstorage-orm)
 
 Interact with localStorage as we would with an ORM.
 
