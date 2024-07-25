@@ -1,16 +1,60 @@
-import { describe, expect, test } from "@jest/globals";
+import { beforeEach, describe, expect, test } from "@jest/globals";
 import { Model, Schema } from "../src";
 
-describe("Failures", () => {
+const createModel = () => {
+    interface FairlyNewSchema extends Schema {
+        prop: string;
+    }
+
+    return new Model<FairlyNewSchema>("new-schema", {
+        softDelete: true,
+    });
+};
+
+beforeEach(() => {
+    localStorage.removeItem("localstorage-db-model-new-schema");
+});
+
+describe("Coverage branchinh", () => {
     test("get records from model without id list", () => {
-        interface Failure extends Schema {
-            prop: string;
-        }
+        const model = createModel();
 
-        const failureModel = new Model<Failure>("failure");
+        const result = model.list();
 
-        const list = failureModel.list();
+        expect(result.length).toBe(0);
+    });
+    test("list: non existent id", () => {
+        const model = createModel();
 
-        expect(list.length).toBe(0);
+        localStorage.setItem(
+            "localstorage-db-model-new-schema",
+            JSON.stringify(["non-existent-id"])
+        );
+
+        const result = model.list();
+
+        expect(result.length).toBe(0);
+    });
+    test("find: non existent id", () => {
+        const model = createModel();
+
+        localStorage.setItem(
+            "localstorage-db-model-new-schema",
+            JSON.stringify(["non-existent-id"])
+        );
+
+        const result = model.find({ prop: "what?" });
+
+        expect(result.length).toBe(0);
+    });
+    test("softDelete: non existent id", () => {
+        const model = createModel();
+
+        localStorage.setItem(
+            "localstorage-db-model-new-schema",
+            JSON.stringify(["non-existent-id"])
+        );
+
+        model.delete("yet-another-non-existent-id");
     });
 });
