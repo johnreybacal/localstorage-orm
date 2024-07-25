@@ -1,7 +1,10 @@
-import { describe, expect, test } from "@jest/globals";
+import { afterAll, beforeAll, describe, expect, test } from "@jest/globals";
 import { Model } from "../src";
 import ModelSettings from "../src/modelSettings";
-import { createPersonModel, modelSettings } from "./common";
+import { clear, createPersonModel, modelSettings } from "./common";
+
+beforeAll(clear);
+afterAll(clear);
 
 describe.each(modelSettings)(
     "Basic functions: Creating [$modelSettings]",

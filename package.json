@@ -8,7 +8,7 @@
         "dist"
     ],
     "scripts": {
-        "test": "jest"
+        "test": "jest --runInBand"
     },
     "repository": {
         "type": "git",

@@ -15,3 +15,19 @@ export const modelSettings: ModelSettings[] = [
         softDelete: true,
     },
 ];
+export const clear = () => {
+    createPersonModel().truncate();
+};
+export const seed = () => {
+    clear();
+    createPersonModel().create([
+        {
+            name: "John Doe",
+            age: 24,
+        },
+        {
+            name: "Jane Doe",
+            age: 24,
+        },
+    ]);
+};

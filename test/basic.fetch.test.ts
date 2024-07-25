@@ -1,6 +1,9 @@
-import { describe, expect, test } from "@jest/globals";
+import { afterAll, beforeAll, describe, expect, test } from "@jest/globals";
 import { Schemas } from "../src";
-import { createPersonModel, Person } from "./common";
+import { clear, createPersonModel, Person, seed } from "./common";
+
+beforeAll(seed);
+afterAll(clear);
 
 describe("Basic functions: Fetching", () => {
     test("list", () => {
