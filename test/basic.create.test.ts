@@ -1,22 +1,7 @@
 import { describe, expect, test } from "@jest/globals";
-import { Model, Schema } from "../src";
+import { Model } from "../src";
 import ModelSettings from "../src/modelSettings";
-
-interface Person extends Schema {
-    name: string;
-    age: number;
-}
-const createPersonModel = (modelSettings?: ModelSettings) => {
-    const personModel = new Model<Person>("person", modelSettings);
-    return personModel;
-};
-const modelSettings: ModelSettings[] = [
-    {},
-    {
-        timestamps: true,
-        softDelete: true,
-    },
-];
+import { createPersonModel } from "./common";
 
 describe.each([
     {},
@@ -144,19 +129,3 @@ describe.each([
         });
     }
 );
-
-describe.each([
-    [
-        {},
-        {
-            timestamps: true,
-            softDelete: true,
-        },
-    ],
-])(`Basic functions: Fetching`, (modelSettings: ModelSettings) => {
-    test("List", () => {
-        const personModel = createPersonModel(modelSettings);
-
-        // personModel.
-    });
-});
