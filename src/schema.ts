@@ -25,4 +25,9 @@ export default interface Schema {
      * Delete this instance
      */
     delete();
+    /**
+     * Populate a reference
+     * @param path
+     */
+    populate(path: string, index?: number);
 }

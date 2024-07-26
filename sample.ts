@@ -12,20 +12,41 @@ interface Contact extends Schema {
 interface Employee extends Schema {
     name: string;
     job: string;
-    contact: Contact;
+    contact: string | Contact;
 }
 interface Company extends Schema {
     name: string;
-    employees: Employee[];
-    contact: Contact;
+    employees: string[] | Employee[];
+    contact: string | Contact;
 }
 
 const modelSettings: ModelSettings = {
     timestamps: true,
 };
 const contactModel = new Model<Contact>("contact", modelSettings);
-const employeeModel = new Model<Employee>("employee", modelSettings);
-const companyModel = new Model<Company>("company", modelSettings);
+const employeeModel = new Model<Employee>("employee", {
+    ...modelSettings,
+    references: [
+        {
+            modelName: "contact",
+            property: "contact",
+        },
+    ],
+});
+const companyModel = new Model<Company>("company", {
+    ...modelSettings,
+    references: [
+        {
+            modelName: "employee",
+            property: "employees",
+            isArray: true,
+        },
+        {
+            modelName: "contact",
+            property: "contact",
+        },
+    ],
+});
 
 contactModel.truncate();
 employeeModel.truncate();
@@ -48,19 +69,24 @@ const employees = employeeModel.create([
     {
         job: "J1",
         name: "E1",
-        contact: contact1,
+        contact: contact1.id,
     },
     {
         job: "J2",
         name: "E2",
-        contact: contact2,
+        contact: contact2.id,
     },
 ]);
 
 const company = companyModel.create({
     name: "C1",
-    employees: employees,
-    contact: contact3,
+    employees: employees.map(({ id }) => id),
+    contact: contact3.id,
 });
 
-console.log(companyModel.findById(company.id));
+console.log(company);
+
+company.populate("employees", 0);
+company.populate("contact");
+
+console.log(company);

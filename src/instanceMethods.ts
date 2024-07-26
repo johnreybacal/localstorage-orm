@@ -1,4 +1,5 @@
 import LocalStorageDb from "./localStorageDb";
+import ModelManager from "./modelManager";
 import ModelSettings from "./modelSettings";
 import Schema from "./schema";
 
@@ -37,6 +38,38 @@ export default class InstanceMethods<T extends Schema> {
         instanceOfSchema.delete = () => {
             this.delete(instanceOfSchema);
         };
+        instanceOfSchema.populate = (path: string, index?: number) => {
+            let refs = this.modelSettings.references.filter(
+                ({ property }) => property === path
+            );
+
+            if (refs.length > 0) {
+                const reference = refs[0];
+
+                if (reference.isArray) {
+                    if (index === undefined) {
+                        const ids: string[] = [...instanceOfSchema[path]];
+
+                        for (let index = 0; index < ids.length; index++) {
+                            instanceOfSchema[path][index] = ModelManager.lookUp(
+                                reference.modelName,
+                                instanceOfSchema[path][index]
+                            );
+                        }
+                    } else {
+                        instanceOfSchema[path][index] = ModelManager.lookUp(
+                            reference.modelName,
+                            instanceOfSchema[path][index]
+                        );
+                    }
+                } else {
+                    instanceOfSchema[path] = ModelManager.lookUp(
+                        reference.modelName,
+                        instanceOfSchema[path]
+                    );
+                }
+            }
+        };
 
         return instanceOfSchema;
     }
@@ -57,6 +90,7 @@ export default class InstanceMethods<T extends Schema> {
             return this.build(createdRecord);
         }
     }
+
     public delete(record: T) {
         if (this.modelSettings.softDelete) {
             this.localStorageDb.softDelete(record.id);
