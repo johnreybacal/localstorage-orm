@@ -17,4 +17,9 @@ export default class Instances<T extends Schema> extends Array<T> {
             this.instance.delete(record);
         });
     }
+    populate(path: string, index?: number) {
+        this.forEach((record) => {
+            this.instance.populate(record, path, index);
+        });
+    }
 }

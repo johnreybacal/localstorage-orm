@@ -39,36 +39,7 @@ export default class InstanceMethods<T extends Schema> {
             this.delete(instanceOfSchema);
         };
         instanceOfSchema.populate = (path: string, index?: number) => {
-            let refs = this.modelSettings.references.filter(
-                ({ property }) => property === path
-            );
-
-            if (refs.length > 0) {
-                const reference = refs[0];
-
-                if (reference.isArray) {
-                    if (index === undefined) {
-                        const ids: string[] = [...instanceOfSchema[path]];
-
-                        for (let index = 0; index < ids.length; index++) {
-                            instanceOfSchema[path][index] = ModelManager.lookUp(
-                                reference.modelName,
-                                instanceOfSchema[path][index]
-                            );
-                        }
-                    } else {
-                        instanceOfSchema[path][index] = ModelManager.lookUp(
-                            reference.modelName,
-                            instanceOfSchema[path][index]
-                        );
-                    }
-                } else {
-                    instanceOfSchema[path] = ModelManager.lookUp(
-                        reference.modelName,
-                        instanceOfSchema[path]
-                    );
-                }
-            }
+            this.populate(instanceOfSchema, path, index);
         };
 
         return instanceOfSchema;
@@ -96,6 +67,39 @@ export default class InstanceMethods<T extends Schema> {
             this.localStorageDb.softDelete(record.id);
         } else {
             this.localStorageDb.delete(record.id);
+        }
+    }
+
+    public populate(record: T, path: string, index?: number) {
+        let refs = this.modelSettings.references.filter(
+            ({ property }) => property === path
+        );
+
+        if (refs.length > 0) {
+            const reference = refs[0];
+
+            if (reference.isArray) {
+                if (index === undefined) {
+                    const ids: string[] = [...record[path]];
+
+                    for (let index = 0; index < ids.length; index++) {
+                        record[path][index] = ModelManager.lookUp(
+                            reference.modelName,
+                            record[path][index]
+                        );
+                    }
+                } else {
+                    record[path][index] = ModelManager.lookUp(
+                        reference.modelName,
+                        record[path][index]
+                    );
+                }
+            } else {
+                record[path] = ModelManager.lookUp(
+                    reference.modelName,
+                    record[path]
+                );
+            }
         }
     }
 }
