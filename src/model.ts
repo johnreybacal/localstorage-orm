@@ -143,9 +143,15 @@ export default class Model<T extends Schema> {
      * @param record record to update
      * @returns record updated
      */
-    update(id: string, record: Omit<T, keyof Schema>) {
+    update(id: string, record: Partial<Omit<T, keyof Schema>>) {
         this.setUpdateTimestamp(record as T);
-        return this.build(this.localStorageDb.update(id, record as T));
+        const updatedData = this.localStorageDb.update(id, record as T);
+
+        if (updatedData) {
+            return this.build(updatedData);
+        }
+
+        return null;
     }
 
     /**
@@ -154,9 +160,9 @@ export default class Model<T extends Schema> {
      */
     delete(id: string) {
         if (this.modelSettings.softDelete) {
-            this.localStorageDb.softDelete(id);
+            return this.localStorageDb.softDelete(id);
         } else {
-            this.localStorageDb.delete(id);
+            return this.localStorageDb.delete(id);
         }
     }
 

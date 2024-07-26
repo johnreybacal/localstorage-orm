@@ -8,7 +8,7 @@ describe.each(modelSettings)(
         beforeAll(seed);
         afterAll(clear);
 
-        test("update", () => {
+        test("update using save", () => {
             const personModel = createPersonModel(modelSettings);
 
             const person = personModel.findOne({
@@ -49,6 +49,7 @@ describe.each(modelSettings)(
                 name: "Jenny Doe",
                 age: 24,
             });
+
             const janeDoe = personModel.findOne({
                 name: "Jane Doe",
             });

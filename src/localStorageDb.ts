@@ -59,10 +59,10 @@ export default class LocalStorageDb<T extends Schema> {
      * @param id ID of the record
      * @returns specific record
      */
-    public get(id: string): T | undefined {
+    public get(id: string): T {
         const record = JSON.parse(localStorage.getItem(id) ?? "{}") as T;
 
-        return record.id ? record : undefined;
+        return record.id ? record : null;
     }
 
     /**
@@ -92,14 +92,21 @@ export default class LocalStorageDb<T extends Schema> {
     /**
      * Update an existing record based on ID
      * @param id ID of the record
-     * @param record record to update
+     * @param updateData record to update
      * @returns record updated
      */
-    public update(id: string, record: T) {
-        record.id = id;
-        localStorage.setItem(id, JSON.stringify(record));
+    public update(id: string, updateData: Partial<T>) {
+        const recordToUpdate = this.get(id);
 
-        return record;
+        if (recordToUpdate) {
+            Object.assign(recordToUpdate, {
+                ...updateData,
+            });
+            localStorage.setItem(id, JSON.stringify(recordToUpdate));
+            return recordToUpdate;
+        }
+
+        return null;
     }
 
     /**
@@ -107,11 +114,19 @@ export default class LocalStorageDb<T extends Schema> {
      * @param id ID of the record
      */
     public delete(id: string) {
-        const idList = this.getIdList();
-        idList.splice(idList.indexOf(id), 1);
+        const recordToDelete = this.get(id);
 
-        localStorage.removeItem(id);
-        this.saveIdList(idList);
+        if (recordToDelete) {
+            const idList = this.getIdList();
+            idList.splice(idList.indexOf(id), 1);
+
+            localStorage.removeItem(id);
+            this.saveIdList(idList);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -125,7 +140,10 @@ export default class LocalStorageDb<T extends Schema> {
             record.isDeleted = true;
 
             localStorage.setItem(id, JSON.stringify(record));
+            return true;
         }
+
+        return false;
     }
 
     /**
