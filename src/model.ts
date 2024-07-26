@@ -1,11 +1,12 @@
 import InstanceMethods from "./instanceMethods";
 import LocalStorageDb from "./localStorageDb";
+import ModelManager from "./modelManager";
 import ModelSettings from "./modelSettings";
 import Schema from "./schema";
 import Schemas from "./schemas";
 
 export default class Model<T extends Schema> {
-    protected modelName: string;
+    modelName: string;
     private localStorageDb: LocalStorageDb<T>;
     private modelSettings: ModelSettings;
     private instanceMethods: InstanceMethods<T>;
@@ -16,6 +17,8 @@ export default class Model<T extends Schema> {
     constructor(modelName: string, modelSettings?: ModelSettings) {
         this.modelName = modelName;
         this.localStorageDb = new LocalStorageDb<T>(this.modelName);
+
+        ModelManager.addModel(this, this.localStorageDb);
 
         this.modelSettings = modelSettings ?? {
             timestamps: false,

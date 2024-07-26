@@ -1,108 +1,66 @@
 import { LocalStorage } from "node-localstorage";
-import { Model, Schema } from "./src";
-import ModelSettings from "./src/modelSettings";
-export default () => {
-    if (typeof window === "undefined") {
-        global.localStorage = new LocalStorage("./data");
-    }
-};
+import { Model, ModelSettings, Schema } from "./src";
 
-interface Person extends Schema {
+if (typeof window === "undefined") {
+    global.localStorage = new LocalStorage("./data");
+}
+
+interface Contact extends Schema {
+    phone: number;
+    email: string;
+}
+interface Employee extends Schema {
     name: string;
-    age: number;
-    hobbies: string[];
+    job: string;
+    contact: Contact;
 }
+interface Company extends Schema {
+    name: string;
+    employees: Employee[];
+    contact: Contact;
+}
+
 const modelSettings: ModelSettings = {
-    timestamps: false,
-    softDelete: true,
+    timestamps: true,
 };
-const personModel = new Model<Person>("person", modelSettings);
-personModel.truncate();
+const contactModel = new Model<Contact>("contact", modelSettings);
+const employeeModel = new Model<Employee>("employee", modelSettings);
+const companyModel = new Model<Company>("company", modelSettings);
 
-const person = personModel.build();
+contactModel.truncate();
+employeeModel.truncate();
+companyModel.truncate();
 
-person.name = "johnrey";
-person.age = 1;
-
-person.save();
-
-const person2 = personModel.create({
-    name: "john doe",
-    age: 2,
-    hobbies: [],
+const contact1 = contactModel.create({
+    email: "1",
+    phone: 1,
 });
-const person3 = personModel.build({
-    name: "jane doe",
-    age: 3,
-    hobbies: ["acting"],
+const contact2 = contactModel.create({
+    email: "2",
+    phone: 2,
+});
+const contact3 = contactModel.create({
+    email: "3",
+    phone: 3,
 });
 
-person2.name = "ghege";
-
-person2.save();
-
-person3.save();
-
-personModel.create([
+const employees = employeeModel.create([
     {
-        name: "1",
-        age: 1,
-        hobbies: [],
+        job: "J1",
+        name: "E1",
+        contact: contact1,
     },
     {
-        name: "2",
-        age: 1,
-        hobbies: [],
-    },
-    {
-        name: "3",
-        age: 1,
-        hobbies: [],
+        job: "J2",
+        name: "E2",
+        contact: contact2,
     },
 ]);
 
-const persons = personModel.build([
-    {
-        name: "4",
-        age: 4,
-        hobbies: [],
-    },
-    {
-        name: "5",
-        age: 5,
-        hobbies: [],
-    },
-    {
-        name: "6",
-        age: 6,
-        hobbies: [],
-    },
-]);
-
-persons[0].save();
-persons[1].name = "Not 5";
-persons[1].save();
-persons[0].delete();
-
-persons.save();
-
-const personss = personModel.list();
-
-personss[1].name = "PERSON 1";
-
-personss.save();
-
-const personWithAge1 = personModel.find({
-    age: 1,
+const company = companyModel.create({
+    name: "C1",
+    employees: employees,
+    contact: contact3,
 });
 
-personWithAge1.delete();
-
-const janeDoe = personModel.findOne({ name: "jane doe" });
-
-if (janeDoe) {
-    console.log(janeDoe);
-    janeDoe.age = 33;
-    janeDoe.save();
-    console.log(personModel.findById(janeDoe.id));
-}
+console.log(companyModel.findById(company.id));
