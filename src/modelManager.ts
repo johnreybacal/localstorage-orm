@@ -7,7 +7,7 @@ interface Mapping {
     db: LocalStorageDb<Schema>;
 }
 
-class ModelManager {
+export class ModelManager {
     static #instance: ModelManager;
 
     private constructor() {}

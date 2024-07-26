@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, test } from "@jest/globals";
 import { Model, ModelSettings, Schema } from "../src";
+import { ModelManager } from "../src/modelManager";
 
 const createModel = (modelSettings?: ModelSettings) => {
     interface FairlyNewSchema extends Schema {
@@ -58,5 +59,9 @@ describe("Coverage branchin", () => {
 
         const result = model.delete("yet-another-non-existent-id");
         expect(result).toBe(false);
+    });
+    test("model manager", () => {
+        const models = ModelManager.instance.models;
+        expect(models).not.toBeNull();
     });
 });
