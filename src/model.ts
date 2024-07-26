@@ -1,9 +1,9 @@
 import InstanceMethods from "./instanceMethods";
+import Instances from "./instances";
 import LocalStorageDb from "./localStorageDb";
 import ModelManager from "./modelManager";
 import ModelSettings from "./modelSettings";
 import Schema from "./schema";
-import Schemas from "./schemas";
 
 export default class Model<T extends Schema> {
     modelName: string;
@@ -39,16 +39,16 @@ export default class Model<T extends Schema> {
     /**
      * Creates a list of instances of the model
      */
-    build(instances: Omit<T, keyof Schema>[]): Schemas<T>;
+    build(instances: Omit<T, keyof Schema>[]): Instances<T>;
 
     /**
      * Overloading implementation
      */
     build(
         params?: Omit<T, keyof Schema> | Omit<T, keyof Schema>[]
-    ): T | Schemas<T> {
+    ): T | Instances<T> {
         if (params && Array.isArray(params)) {
-            const builtInstances: Schemas<T> = new Schemas<T>(
+            const builtInstances: Instances<T> = new Instances<T>(
                 this.instanceMethods
             );
 
@@ -116,14 +116,14 @@ export default class Model<T extends Schema> {
      * @param records list to bulk create
      * @returns records created
      */
-    create(records: Omit<T, keyof Schema>[]): Schemas<T>;
+    create(records: Omit<T, keyof Schema>[]): Instances<T>;
 
     /**
      * Overloading implementation
      */
     create(
         param: Omit<T, keyof Schema> | Omit<T, keyof Schema>[]
-    ): T | Schemas<T> {
+    ): T | Instances<T> {
         if (Array.isArray(param)) {
             const instanceRecords = param as T[];
             instanceRecords.forEach((record) => {
