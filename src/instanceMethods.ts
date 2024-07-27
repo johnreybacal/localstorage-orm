@@ -4,8 +4,8 @@ import ModelSettings from "./modelSettings";
 import Schema from "./schema";
 
 export default class InstanceMethods<T extends Schema> {
-    private modelSettings: ModelSettings;
-    private modelName: string;
+    readonly modelSettings: ModelSettings;
+    readonly modelName: string;
 
     constructor(modelName: string, modelSettings: ModelSettings) {
         this.modelName = modelName;

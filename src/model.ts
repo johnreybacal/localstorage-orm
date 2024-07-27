@@ -6,8 +6,8 @@ import ModelSettings from "./modelSettings";
 import Schema from "./schema";
 
 export default class Model<T extends Schema> {
-    modelName: string;
-    private modelSettings: ModelSettings;
+    readonly modelName: string;
+    readonly modelSettings: ModelSettings;
     private instanceMethods: InstanceMethods<T>;
 
     /**
