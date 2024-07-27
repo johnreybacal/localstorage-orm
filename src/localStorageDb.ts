@@ -1,22 +1,26 @@
-import Schema from "./schema";
+export class LocalStorageDb {
+    static #instance: LocalStorageDb;
 
-export default class LocalStorageDb<T extends Schema> {
-    protected modelName: string;
+    private constructor() {}
 
-    constructor(modelName: string) {
-        this.modelName = `localstorage-db-model-${modelName}`;
+    public static get instance(): LocalStorageDb {
+        if (!LocalStorageDb.#instance) {
+            LocalStorageDb.#instance = new LocalStorageDb();
+        }
+
+        return LocalStorageDb.#instance;
     }
 
     /**
      * Fetches all records in the model
      * @returns array of records
      */
-    public list(): T[] {
-        const idList = this.getIdList();
-        const records: T[] = [];
+    public list(modelName: string) {
+        const idList = this.getIdList(modelName);
+        const records = [];
 
         idList.forEach((id: string) => {
-            const record = this.get(id);
+            const record = this.get(modelName, id);
             if (record) {
                 records.push(record);
             }
@@ -25,12 +29,12 @@ export default class LocalStorageDb<T extends Schema> {
         return records;
     }
 
-    public find(filter: Partial<T>, isFindOne = false): T[] {
-        const idList = this.getIdList();
-        const filteredRecords: T[] = [];
+    public find(modelName: string, filter: any, isFindOne = false) {
+        const idList = this.getIdList(modelName);
+        const filteredRecords = [];
 
         for (const id of idList) {
-            const record = this.get(id);
+            const record = this.get(modelName, id);
             if (record) {
                 const keys = Object.keys(filter);
 
@@ -59,8 +63,8 @@ export default class LocalStorageDb<T extends Schema> {
      * @param id ID of the record
      * @returns specific record
      */
-    public get(id: string): T {
-        const record = JSON.parse(localStorage.getItem(id) ?? "{}") as T;
+    public get(modelName: string, id: string) {
+        const record = JSON.parse(localStorage.getItem(id) ?? "{}");
 
         return record.id ? record : null;
     }
@@ -70,20 +74,20 @@ export default class LocalStorageDb<T extends Schema> {
      * @param record record to create
      * @returns record created
      */
-    public create(record: T) {
-        const idList = this.getIdList();
+    public create(modelName: string, record: any) {
+        const idList = this.getIdList(modelName);
         idList.push(record.id);
 
         localStorage.setItem(record.id, JSON.stringify(record));
-        this.saveIdList(idList);
+        this.saveIdList(modelName, idList);
 
         return record;
     }
 
-    public bulkCreate(records: T[]) {
-        const createdRecords: T[] = [];
+    public bulkCreate(modelName: string, records: any[]) {
+        const createdRecords = [];
         records.forEach((record) => {
-            createdRecords.push(this.create(record));
+            createdRecords.push(this.create(modelName, record));
         });
 
         return createdRecords;
@@ -95,8 +99,8 @@ export default class LocalStorageDb<T extends Schema> {
      * @param updateData record to update
      * @returns record updated
      */
-    public update(id: string, updateData: Partial<T>) {
-        const recordToUpdate = this.get(id);
+    public update(modelName: string, id: string, updateData: any) {
+        const recordToUpdate = this.get(modelName, id);
 
         if (recordToUpdate) {
             Object.assign(recordToUpdate, {
@@ -113,15 +117,15 @@ export default class LocalStorageDb<T extends Schema> {
      * Delete a record based on ID
      * @param id ID of the record
      */
-    public delete(id: string) {
-        const recordToDelete = this.get(id);
+    public delete(modelName: string, id: string) {
+        const recordToDelete = this.get(modelName, id);
 
         if (recordToDelete) {
-            const idList = this.getIdList();
+            const idList = this.getIdList(modelName);
             idList.splice(idList.indexOf(id), 1);
 
             localStorage.removeItem(id);
-            this.saveIdList(idList);
+            this.saveIdList(modelName, idList);
 
             return true;
         }
@@ -133,8 +137,8 @@ export default class LocalStorageDb<T extends Schema> {
      * Soft deletes a record based on ID
      * @param id ID of the record
      */
-    public softDelete(id: string) {
-        const record = this.get(id);
+    public softDelete(modelName: string, id: string) {
+        const record = this.get(modelName, id);
 
         if (record) {
             record.isDeleted = true;
@@ -149,11 +153,11 @@ export default class LocalStorageDb<T extends Schema> {
     /**
      * Deletes all records in the model
      */
-    public truncate() {
-        const idList = this.getIdList();
+    public truncate(modelName: string) {
+        const idList = this.getIdList(modelName);
 
         idList.forEach((id: string) => {
-            this.delete(id);
+            this.delete(modelName, id);
         });
     }
 
@@ -161,8 +165,10 @@ export default class LocalStorageDb<T extends Schema> {
      * Fetches all ID of model
      * @returns array of ID of model
      */
-    private getIdList(): Array<string> {
-        const idList = localStorage.getItem(this.modelName);
+    private getIdList(modelName: string): Array<string> {
+        const idList = localStorage.getItem(
+            `localstorage-db-model-${modelName}`
+        );
         if (idList) {
             return JSON.parse(idList);
         } else {
@@ -174,7 +180,12 @@ export default class LocalStorageDb<T extends Schema> {
      * Save modified list of IDs
      * @param idList modified list of IDs
      */
-    private saveIdList(idList: Array<string>) {
-        localStorage.setItem(this.modelName, JSON.stringify(idList));
+    private saveIdList(modelName: string, idList: Array<string>) {
+        localStorage.setItem(
+            `localstorage-db-model-${modelName}`,
+            JSON.stringify(idList)
+        );
     }
 }
+
+export const localStorageDb = LocalStorageDb.instance;
