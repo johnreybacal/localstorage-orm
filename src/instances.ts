@@ -1,18 +1,12 @@
-import InstanceMethods from "./instanceMethods";
 import Schema from "./schema";
 
 export default class Instances<T extends Schema> extends Array<T> {
-    private instance: InstanceMethods<T>;
-    constructor(instance: InstanceMethods<T>) {
-        super();
-        this.instance = instance;
-    }
     /**
      * Save this list
      */
     save() {
         this.forEach((record) => {
-            this.instance.save(record);
+            record.save();
         });
     }
     /**
@@ -20,7 +14,7 @@ export default class Instances<T extends Schema> extends Array<T> {
      */
     delete() {
         this.forEach((record) => {
-            this.instance.delete(record);
+            record.delete();
         });
     }
     /**
@@ -30,7 +24,7 @@ export default class Instances<T extends Schema> extends Array<T> {
      */
     populate(path: string, index?: number) {
         this.forEach((record) => {
-            this.instance.populate(record, path, index);
+            record.populate(path, index);
         });
     }
 }
