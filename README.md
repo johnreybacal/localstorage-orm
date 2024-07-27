@@ -171,3 +171,10 @@ const personModelWithSettings = new Model<Person>("person", {
 -   population
 -   indexing
 -   unique
+
+## Brief history (of why I made this)
+
+1.  Created a [to do app](https://johnreybacal.github.io/daily/) to study Vue and added localStorage as persistence option
+2.  Thought "Hey! I can reuse this" and uploaded as seperate repo (localStorage-crud) to github
+    <img src="https://i.pinimg.com/564x/97/fd/84/97fd84572c4aad5db04f8ae4d1f82fc6.jpg" alt="several months later" height="250"/>
+3.  Published my [first package](https://www.npmjs.com/package/psgc-reader) and thought about this project
