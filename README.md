@@ -69,7 +69,7 @@ johnDoe.name = "Johnny Doe";
 johnDoe.save();
 
 for (let person of personAged24) {
-    // What's better than 24?
+    // What's funnier than 24?
     person.age = 25;
 }
 
