@@ -1,13 +1,12 @@
 import InstanceMethods from "./instanceMethods";
 import Instances from "./instances";
-import LocalStorageDb from "./localStorageDb";
+import { localStorageDb } from "./localStorageDb";
 import ModelManager from "./modelManager";
 import ModelSettings from "./modelSettings";
 import Schema from "./schema";
 
 export default class Model<T extends Schema> {
     modelName: string;
-    private localStorageDb: LocalStorageDb<T>;
     private modelSettings: ModelSettings;
     private instanceMethods: InstanceMethods<T>;
 
@@ -16,9 +15,8 @@ export default class Model<T extends Schema> {
      */
     constructor(modelName: string, modelSettings?: ModelSettings) {
         this.modelName = modelName;
-        this.localStorageDb = new LocalStorageDb<T>(this.modelName);
 
-        ModelManager.addModel(this, this.localStorageDb);
+        ModelManager.addModel(this);
 
         this.modelSettings = modelSettings ?? {
             timestamps: false,
@@ -26,7 +24,7 @@ export default class Model<T extends Schema> {
         };
 
         this.instanceMethods = new InstanceMethods<T>(
-            this.localStorageDb,
+            this.modelName,
             this.modelSettings
         );
     }
@@ -48,9 +46,7 @@ export default class Model<T extends Schema> {
         params?: Omit<T, keyof Schema> | Omit<T, keyof Schema>[]
     ): T | Instances<T> {
         if (params && Array.isArray(params)) {
-            const builtInstances: Instances<T> = new Instances<T>(
-                this.instanceMethods
-            );
+            const builtInstances: Instances<T> = new Instances<T>();
 
             params.forEach((param) => {
                 builtInstances.push(this.instanceMethods.build(param));
@@ -67,15 +63,15 @@ export default class Model<T extends Schema> {
      * @returns array of records
      */
     list() {
-        return this.build(this.localStorageDb.list());
+        return this.build(localStorageDb.list(this.modelName));
     }
 
     find(filter: Partial<T>) {
-        return this.build(this.localStorageDb.find(filter));
+        return this.build(localStorageDb.find(this.modelName, filter));
     }
 
     findOne(filter: Partial<T>) {
-        const filtered = this.localStorageDb.find(filter, true);
+        const filtered = localStorageDb.find(this.modelName, filter, true);
         if (filtered.length > 0) {
             return this.build(filtered[0]);
         } else {
@@ -96,9 +92,9 @@ export default class Model<T extends Schema> {
      * @returns specific record
      */
     get(id: string) {
-        const record = this.localStorageDb.get(id);
+        const record = localStorageDb.get(this.modelName, id);
         if (record) {
-            return this.build(this.localStorageDb.get(id));
+            return this.build(localStorageDb.get(this.modelName, id));
         } else {
             return null;
         }
@@ -130,13 +126,17 @@ export default class Model<T extends Schema> {
                 record.id = crypto.randomUUID();
                 this.setCreateTimestamp(record);
             });
-            return this.build(this.localStorageDb.bulkCreate(instanceRecords));
+            return this.build(
+                localStorageDb.bulkCreate(this.modelName, instanceRecords)
+            );
         } else {
             const instanceRecord = param as T;
             this.setCreateTimestamp(instanceRecord);
             instanceRecord.id = crypto.randomUUID();
 
-            return this.build(this.localStorageDb.create(instanceRecord));
+            return this.build(
+                localStorageDb.create(this.modelName, instanceRecord)
+            );
         }
     }
 
@@ -148,7 +148,11 @@ export default class Model<T extends Schema> {
      */
     update(id: string, record: Partial<Omit<T, keyof Schema>>) {
         this.setUpdateTimestamp(record as T);
-        const updatedData = this.localStorageDb.update(id, record as T);
+        const updatedData = localStorageDb.update(
+            this.modelName,
+            id,
+            record as T
+        );
 
         if (updatedData) {
             return this.build(updatedData);
@@ -163,9 +167,9 @@ export default class Model<T extends Schema> {
      */
     delete(id: string) {
         if (this.modelSettings.softDelete) {
-            return this.localStorageDb.softDelete(id);
+            return localStorageDb.softDelete(this.modelName, id);
         } else {
-            return this.localStorageDb.delete(id);
+            return localStorageDb.delete(this.modelName, id);
         }
     }
 
@@ -173,7 +177,7 @@ export default class Model<T extends Schema> {
      * Deletes all records in the model
      */
     truncate() {
-        this.localStorageDb.truncate();
+        localStorageDb.truncate(this.modelName);
     }
 
     private setCreateTimestamp(record: T) {
