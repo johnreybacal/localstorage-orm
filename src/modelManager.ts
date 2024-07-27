@@ -1,11 +1,4 @@
-import LocalStorageDb from "./localStorageDb";
 import Model from "./model";
-import Schema from "./schema";
-
-interface Mapping {
-    model: Model<Schema>;
-    db: LocalStorageDb<Schema>;
-}
 
 export class ModelManager {
     static #instance: ModelManager;
@@ -20,16 +13,13 @@ export class ModelManager {
         return ModelManager.#instance;
     }
 
-    models: Mapping[] = [];
+    models: Model<any>[] = [];
 
-    addModel<T extends Schema>(model: Model<T>, db: LocalStorageDb<T>) {
+    addModel(model: Model<any>) {
         const modelFound = this.findModel(model.modelName);
 
         if (!modelFound) {
-            this.models.push({
-                model,
-                db,
-            });
+            this.models.push(model);
         }
     }
 
@@ -41,11 +31,11 @@ export class ModelManager {
 
     private findModel(modelName: string) {
         const modelsFound = this.models.filter(
-            ({ model }) => model.modelName === modelName
+            (model) => model.modelName === modelName
         );
 
         if (modelsFound.length > 0) {
-            return modelsFound[0].model;
+            return modelsFound[0];
         } else {
             return null;
         }
