@@ -3,9 +3,9 @@
  * https://jestjs.io/docs/configuration
  */
 
-import type { Config } from "jest";
+import type { JestConfigWithTsJest } from "ts-jest";
 
-const config: Config = {
+const config: JestConfigWithTsJest = {
     // All imported modules in your tests should be mocked automatically
     // automock: false,
 
@@ -33,7 +33,7 @@ const config: Config = {
     // ],
 
     // Indicates which provider should be used to instrument code for coverage
-    // coverageProvider: "babel",
+    coverageProvider: "v8",
 
     // A list of reporter names that Jest uses when writing coverage reports
     // coverageReporters: [
@@ -146,7 +146,7 @@ const config: Config = {
     // snapshotSerializers: [],
 
     // The test environment that will be used for testing
-    // testEnvironment: "jest-environment-node",
+    testEnvironment: "node",
 
     // Options that will be passed to the testEnvironment
     // testEnvironmentOptions: {},
@@ -175,7 +175,9 @@ const config: Config = {
     // testRunner: "jest-circus/runner",
 
     // A map from regular expressions to paths to transformers
-    // transform: undefined,
+    transform: {
+        "^.+.tsx?$": ["ts-jest", {}],
+    },
 
     // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
     // transformIgnorePatterns: [
