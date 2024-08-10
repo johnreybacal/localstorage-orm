@@ -139,19 +139,19 @@ export default class Model<T extends Schema> {
      * @param record record to create
      * @returns record created
      */
-    create(record: PartialRecord<T>): T;
+    create(record: Record<T>): T;
 
     /**
      * Bulk insert a list of records
      * @param records list to bulk create
      * @returns records created
      */
-    create(records: PartialRecord<T>[]): Instances<T>;
+    create(records: Record<T>[]): Instances<T>;
 
     /**
      * Overloading implementation
      */
-    create(param: PartialRecord<T> | PartialRecord<T>[]): T | Instances<T> {
+    create(param: Record<T> | Record<T>[]): T | Instances<T> {
         if (Array.isArray(param)) {
             const instanceRecords = param as T[];
             instanceRecords.forEach((record) => {
