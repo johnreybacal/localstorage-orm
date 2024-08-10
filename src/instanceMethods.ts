@@ -25,10 +25,7 @@ export default class InstanceMethods<T extends Schema> {
     }
 
     public build(instance?: Record<T>): T {
-        if (!instance) {
-            instance = {} as T;
-        }
-        const instanceOfSchema = instance as T;
+        const instanceOfSchema = (instance ?? {}) as T;
 
         instanceOfSchema.save = () => {
             return this.save(instanceOfSchema);
