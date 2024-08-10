@@ -98,5 +98,15 @@ describe.each(modelSettings)(
                 }
             }
         });
+        test("update a non existent id", () => {
+            const model = createPersonModel(modelSettings);
+
+            const result = model.update("non-existent-id", {
+                name: "I do not exist",
+                age: 0,
+            });
+
+            expect(result).toBeNull();
+        });
     }
 );

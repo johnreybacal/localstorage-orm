@@ -72,5 +72,12 @@ describe.each(modelSettings)(
                 expect(personsAged24.length).toBe(0);
             }
         });
+        test("delete a non existent id", () => {
+            const model = createPersonModel(modelSettings);
+
+            const result = model.delete("non-existent-id");
+
+            expect(result).toBe(false);
+        });
     }
 );
