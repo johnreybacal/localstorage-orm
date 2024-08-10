@@ -102,6 +102,17 @@ export default class Model<T extends Schema> {
     }
 
     /**
+     * Delete records that matches with the find filter
+     */
+    findAndDelete(filter: Filter<T>) {
+        const records: Instances<T> = this.build(
+            localStorageDb.find(this.modelName, filter)
+        );
+
+        records.delete();
+    }
+
+    /**
      * Fetch a specific record based on ID
      * @param id ID of the record
      * @returns specific record

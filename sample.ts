@@ -16,8 +16,8 @@ interface Employee extends Schema {
 }
 interface Company extends Schema {
     name: string;
-    employees: string[] | Employee[];
-    contact: string | Contact;
+    employees?: string[] | Employee[];
+    contact?: string | Contact;
 }
 
 const modelSettings: ModelSettings = {
@@ -98,3 +98,14 @@ console.log(
         phone: 2,
     })
 );
+
+companyModel.create([
+    {
+        name: "hehe",
+    },
+    {
+        name: "hehe",
+    },
+]);
+
+companyModel.findAndDelete({ name: "hehe" });
