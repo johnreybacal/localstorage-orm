@@ -35,6 +35,7 @@ export class LocalStorageDb {
 
         for (const id of idList) {
             const record = this.get(modelName, id);
+            // TODO: recursive find
             if (record) {
                 const keys = Object.keys(filter);
 

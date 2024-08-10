@@ -45,7 +45,7 @@ describe.each(modelSettings)(
             expect(person).not.toBeNull();
             const id = person!.id;
 
-            const updatedRecord = personModel.update(id, {
+            const updatedRecord = personModel.findByIdAndUpdate(id, {
                 name: "Jenny Doe",
                 age: 24,
             });
