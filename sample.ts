@@ -64,10 +64,7 @@ const contact3 = contactModel.create({
     email: "3",
     phone: 3,
 });
-
-contactModel.findByIdAndUpdate(contact1.id, {
-    phone: 123123,
-});
+contactModel.findAndUpdate({}, {});
 
 const employees = employeeModel.create([
     {

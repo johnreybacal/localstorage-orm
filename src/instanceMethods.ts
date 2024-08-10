@@ -2,6 +2,7 @@ import { localStorageDb } from "./localStorageDb";
 import ModelManager from "./modelManager";
 import ModelSettings from "./modelSettings";
 import Schema from "./schema";
+import { Record } from "./types";
 
 export default class InstanceMethods<T extends Schema> {
     readonly modelSettings: ModelSettings;
@@ -23,7 +24,7 @@ export default class InstanceMethods<T extends Schema> {
         }
     }
 
-    public build(instance?: Omit<T, keyof Schema>): T {
+    public build(instance?: Record<T>): T {
         if (!instance) {
             instance = {} as T;
         }

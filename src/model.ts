@@ -4,6 +4,7 @@ import { localStorageDb } from "./localStorageDb";
 import ModelManager from "./modelManager";
 import ModelSettings from "./modelSettings";
 import Schema from "./schema";
+import { Filter, PartialRecord, Record } from "./types";
 
 export default class Model<T extends Schema> {
     readonly modelName: string;
@@ -32,19 +33,17 @@ export default class Model<T extends Schema> {
     /**
      * Creates a new instance of the model
      */
-    build(instance?: Omit<T, keyof Schema>): T;
+    build(instance?: Record<T>): T;
 
     /**
      * Creates a list of instances of the model
      */
-    build(instances: Omit<T, keyof Schema>[]): Instances<T>;
+    build(instances: Record<T>[]): Instances<T>;
 
     /**
      * Overloading implementation
      */
-    build(
-        params?: Omit<T, keyof Schema> | Omit<T, keyof Schema>[]
-    ): T | Instances<T> {
+    build(params?: Record<T> | Record<T>[]): T | Instances<T> {
         if (params && Array.isArray(params)) {
             const builtInstances: Instances<T> = new Instances<T>();
 
@@ -54,7 +53,7 @@ export default class Model<T extends Schema> {
 
             return builtInstances;
         } else {
-            return this.instanceMethods.build(params as Omit<T, keyof Schema>);
+            return this.instanceMethods.build(params as Record<T>);
         }
     }
 
@@ -69,14 +68,14 @@ export default class Model<T extends Schema> {
     /**
      * Fetches record/s based on the given filter
      */
-    find(filter: Partial<T>) {
+    find(filter: Filter<T>) {
         return this.build(localStorageDb.find(this.modelName, filter));
     }
 
     /**
      * Fetches a single record based on the given filter
      */
-    findOne(filter: Partial<T>) {
+    findOne(filter: Filter<T>) {
         const filtered = localStorageDb.find(this.modelName, filter, true);
         if (filtered.length > 0) {
             return this.build(filtered[0]);
@@ -88,10 +87,7 @@ export default class Model<T extends Schema> {
     /**
      * Update records that matches with the find filter
      */
-    findAndUpdate(
-        filter: Partial<T>,
-        updateData: Partial<Omit<T, keyof Schema>>
-    ) {
+    findAndUpdate(filter: Filter<T>, updateData: PartialRecord<T>) {
         const records: Instances<T> = this.build(
             localStorageDb.find(this.modelName, filter)
         );
@@ -120,7 +116,7 @@ export default class Model<T extends Schema> {
      * @param record record to update
      * @returns record updated
      */
-    findByIdAndUpdate(id: string, updateData: Partial<Omit<T, keyof Schema>>) {
+    findByIdAndUpdate(id: string, updateData: PartialRecord<T>) {
         return this.update(id, updateData);
     }
 
@@ -143,21 +139,19 @@ export default class Model<T extends Schema> {
      * @param record record to create
      * @returns record created
      */
-    create(record: Omit<T, keyof Schema>): T;
+    create(record: PartialRecord<T>): T;
 
     /**
      * Bulk insert a list of records
      * @param records list to bulk create
      * @returns records created
      */
-    create(records: Omit<T, keyof Schema>[]): Instances<T>;
+    create(records: PartialRecord<T>[]): Instances<T>;
 
     /**
      * Overloading implementation
      */
-    create(
-        param: Omit<T, keyof Schema> | Omit<T, keyof Schema>[]
-    ): T | Instances<T> {
+    create(param: PartialRecord<T> | PartialRecord<T>[]): T | Instances<T> {
         if (Array.isArray(param)) {
             const instanceRecords = param as T[];
             instanceRecords.forEach((record) => {
@@ -184,7 +178,7 @@ export default class Model<T extends Schema> {
      * @param record record to update
      * @returns record updated
      */
-    update(id: string, record: Partial<Omit<T, keyof Schema>>) {
+    update(id: string, record: PartialRecord<T>) {
         this.setUpdateTimestamp(record as T);
         const updatedData = localStorageDb.update(
             this.modelName,
@@ -215,7 +209,7 @@ export default class Model<T extends Schema> {
      *
      * @returns the number of records
      */
-    count(filter?: Partial<Omit<T, keyof Schema>>) {
+    count(filter?: Filter<T>) {
         return localStorageDb.count(this.modelName, filter);
     }
 
