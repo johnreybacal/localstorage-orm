@@ -1,5 +1,4 @@
 import { afterAll, beforeAll, describe, expect, test } from "@jest/globals";
-import { Instances } from "../src";
 import { clear, createPersonModel, Person, seed } from "./common";
 
 beforeAll(seed);
@@ -11,7 +10,7 @@ describe("Basic functions: Fetching", () => {
 
         const persons = personModel.list();
 
-        expect(persons).toBeInstanceOf(Instances<Person>);
+        expect(persons).toBeInstanceOf(Array<Person>);
         expect(persons.length).toBeGreaterThan(0);
     });
     test("find", () => {
@@ -21,7 +20,7 @@ describe("Basic functions: Fetching", () => {
             age: 24,
         });
 
-        expect(persons).toBeInstanceOf(Instances<Person>);
+        expect(persons).toBeInstanceOf(Array<Person>);
         expect(persons.length).toBeGreaterThan(0);
         persons.forEach((person) => expect(person.age).toBe(24));
     });
