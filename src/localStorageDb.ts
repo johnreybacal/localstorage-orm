@@ -151,6 +151,17 @@ export class LocalStorageDb {
     }
 
     /**
+     * Returns the number of records for the given model
+     */
+    public count(modelName: string, filter?: any) {
+        if (filter) {
+            return this.find(modelName, filter).length;
+        } else {
+            return this.getIdList(modelName).length;
+        }
+    }
+
+    /**
      * Deletes all records in the model
      */
     public truncate(modelName: string) {

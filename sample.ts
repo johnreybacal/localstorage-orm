@@ -65,6 +65,10 @@ const contact3 = contactModel.create({
     phone: 3,
 });
 
+contactModel.findByIdAndUpdate(contact1.id, {
+    phone: 123123,
+});
+
 const employees = employeeModel.create([
     {
         job: "J1",
@@ -90,3 +94,10 @@ company.populate("employees", 0);
 company.populate("contact");
 
 console.log(company);
+
+console.log(contactModel.count());
+console.log(
+    contactModel.count({
+        phone: 2,
+    })
+);

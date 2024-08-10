@@ -66,10 +66,16 @@ export default class Model<T extends Schema> {
         return this.build(localStorageDb.list(this.modelName));
     }
 
+    /**
+     * Fetches record/s based on the given filter
+     */
     find(filter: Partial<T>) {
         return this.build(localStorageDb.find(this.modelName, filter));
     }
 
+    /**
+     * Fetches a single record based on the given filter
+     */
     findOne(filter: Partial<T>) {
         const filtered = localStorageDb.find(this.modelName, filter, true);
         if (filtered.length > 0) {
@@ -80,11 +86,43 @@ export default class Model<T extends Schema> {
     }
 
     /**
+     * Update records that matches with the find filter
+     */
+    findAndUpdate(
+        filter: Partial<T>,
+        updateData: Partial<Omit<T, keyof Schema>>
+    ) {
+        const records: Instances<T> = this.build(
+            localStorageDb.find(this.modelName, filter)
+        );
+        records.map((record: T) => {
+            this.setUpdateTimestamp(record);
+            Object.assign(record, updateData);
+        });
+
+        records.save();
+
+        return records;
+    }
+
+    /**
      * Fetch a specific record based on ID
      * @param id ID of the record
      * @returns specific record
      */
-    findById = (id: string) => this.get(id);
+    findById(id: string) {
+        return this.get(id);
+    }
+
+    /**
+     * Update an existing record based on ID
+     * @param id ID of the record
+     * @param record record to update
+     * @returns record updated
+     */
+    findByIdAndUpdate(id: string, updateData: Partial<Omit<T, keyof Schema>>) {
+        return this.update(id, updateData);
+    }
 
     /**
      * Fetch a specific record based on ID
@@ -171,6 +209,14 @@ export default class Model<T extends Schema> {
         } else {
             return localStorageDb.delete(this.modelName, id);
         }
+    }
+
+    /**
+     *
+     * @returns the number of records
+     */
+    count(filter?: Partial<Omit<T, keyof Schema>>) {
+        return localStorageDb.count(this.modelName, filter);
     }
 
     /**
