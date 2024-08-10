@@ -32,16 +32,19 @@ export default class Model<T extends Schema> {
 
     /**
      * Creates a new instance of the model
+     * @param instance
      */
     build(instance?: Record<T>): T;
 
     /**
      * Creates a list of instances of the model
+     * @param instances
      */
     build(instances: Record<T>[]): Instances<T>;
 
     /**
      * Overloading implementation
+     * @param params
      */
     build(params?: Record<T> | Record<T>[]): T | Instances<T> {
         if (params && Array.isArray(params)) {
@@ -67,6 +70,7 @@ export default class Model<T extends Schema> {
 
     /**
      * Fetches record/s based on the given filter
+     * @param filter
      */
     find(filter: Filter<T>) {
         return this.build(localStorageDb.find(this.modelName, filter));
@@ -74,6 +78,7 @@ export default class Model<T extends Schema> {
 
     /**
      * Fetches a single record based on the given filter
+     * @param filter
      */
     findOne(filter: Filter<T>) {
         const filtered = localStorageDb.find(this.modelName, filter, true);
@@ -86,6 +91,8 @@ export default class Model<T extends Schema> {
 
     /**
      * Update records that matches with the find filter
+     * @param filter
+     * @param updateData
      */
     findAndUpdate(filter: Filter<T>, updateData: PartialRecord<T>) {
         const records: Instances<T> = this.build(
@@ -103,6 +110,7 @@ export default class Model<T extends Schema> {
 
     /**
      * Delete records that matches with the find filter
+     * @param filter
      */
     findAndDelete(filter: Filter<T>) {
         const records: Instances<T> = this.build(
@@ -217,7 +225,7 @@ export default class Model<T extends Schema> {
     }
 
     /**
-     *
+     * Get the number of records for the model
      * @returns the number of records
      */
     count(filter?: Filter<T>) {
