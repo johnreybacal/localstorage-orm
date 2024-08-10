@@ -43,7 +43,7 @@ export default class InstanceMethods<T extends Schema> {
         return instanceOfSchema;
     }
 
-    private save(record: T) {
+    public save(record: T) {
         if (record.id) {
             this.setUpdateTimestamp(record);
 
@@ -64,7 +64,7 @@ export default class InstanceMethods<T extends Schema> {
         }
     }
 
-    private delete(record: T) {
+    public delete(record: T) {
         if (this.modelSettings.softDelete) {
             localStorageDb.softDelete(this.modelName, record.id);
         } else {
@@ -72,7 +72,7 @@ export default class InstanceMethods<T extends Schema> {
         }
     }
 
-    private populate(record: T, path: string, index?: number) {
+    public populate(record: T, path: string, index?: number) {
         let refs = this.modelSettings.references.filter(
             ({ property }) => property === path
         );

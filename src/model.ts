@@ -17,8 +17,6 @@ export default class Model<T extends Schema> {
     constructor(modelName: string, modelSettings?: ModelSettings) {
         this.modelName = modelName;
 
-        ModelManager.addModel(this);
-
         this.modelSettings = modelSettings ?? {
             timestamps: false,
             softDelete: false,
@@ -28,6 +26,7 @@ export default class Model<T extends Schema> {
             this.modelName,
             this.modelSettings
         );
+        ModelManager.register(this, this.instanceMethods);
     }
 
     /**
@@ -48,7 +47,9 @@ export default class Model<T extends Schema> {
      */
     build(params?: Record<T> | Record<T>[]): T | Instances<T> {
         if (params && Array.isArray(params)) {
-            const builtInstances: Instances<T> = new Instances<T>();
+            const builtInstances: Instances<T> = new Instances<T>(
+                this.modelName
+            );
 
             params.forEach((param) => {
                 builtInstances.push(this.instanceMethods.build(param));
